@@ -7,8 +7,6 @@
     import { username } from '$stores/authentication';
 
     function signout() {
-        $jwt = null;
-        $role = null;
         $username = null;
         goto('/');
     }
