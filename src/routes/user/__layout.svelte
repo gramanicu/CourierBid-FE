@@ -4,7 +4,7 @@
     import HamburgerSvg from '$components/svg/Hamburger.svelte';
     import TextLogo from '$components/branding/TextLogo.svelte';
     import DownSvg from '$components/svg/DownSvg.svelte';
-    import { username } from '$stores/authentication';
+    import { username } from '$stores/auth';
 
     function signout() {
         $username = null;
