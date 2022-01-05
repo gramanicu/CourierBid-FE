@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/env';
 
-export const username = writable((browser && localStorage.getItem('username')) || null);
+export const authUser = writable(JSON.parse(browser && localStorage.getItem('accessToken')) || {});
+export const isLogged = writable((browser && localStorage.getItem('isLogged')) || false);
 
 /**
  * Stores a key-value pair in the local storage, which is also
@@ -19,5 +20,5 @@ function updateLocalStorage(key, val) {
     }
 }
 
-
-username.subscribe(val => updateLocalStorage('username', val));
+authUser.subscribe(val => updateLocalStorage('authUser', JSON.stringify(val)));
+isLogged.subscribe(val => updateLocalStorage('isLogged', val));

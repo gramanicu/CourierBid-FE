@@ -1,19 +1,34 @@
+<script context="module">
+    import { authUser, isLogged } from '$stores/auth';
+    import { get } from 'svelte/store';
+    import { browser } from '$app/env';
+
+    export async function load() {
+        if (browser) {
+            const isLoggedIn = get(isLogged);
+
+            if (isLoggedIn === 'false') {
+                return { status: 302, redirect: '/auth/signin' };
+            } else return {};
+        } else return {};
+    }
+</script>
+
 <script>
-    import '$scss/app.scss';
     import CloseSvg from '$components/svg/CloseSvg.svelte';
     import HamburgerSvg from '$components/svg/Hamburger.svelte';
     import TextLogo from '$components/branding/TextLogo.svelte';
     import DownSvg from '$components/svg/DownSvg.svelte';
-    import { username } from '$stores/auth';
+
+    import { goto } from '$app/navigation';
 
     function signout() {
-        $username = null;
+        isLogged.set(false);
+        authUser.set({});
         goto('/');
     }
 
-    const navItems = [
-        { label: 'Users', href: '#'},
-    ];
+    const navItems = [{ label: 'Users', href: '#' }];
 </script>
 
 <div class="drawer drawer-mobile h-screen">
@@ -34,7 +49,7 @@
 
             <div class="navbar-end lg:justify-self-end lg:w-full hidden lg:flex flex-row gap-1">
                 <!-- Logged In Username -->
-                <p>{$username}</p>
+                <p>{$authUser.username}</p>
                 <!-- User dropdown menu -->
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" class="btn btn-circle btn-ghost btn-xs text-info">

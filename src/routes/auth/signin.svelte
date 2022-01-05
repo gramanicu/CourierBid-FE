@@ -5,12 +5,21 @@
     import FormLink from '$components/forms/FormLink.svelte';
     import FormInputText from '$components/forms/FormInputText.svelte';
 
+    import { authUser, isLogged } from '$stores/auth';
+    import { goto } from '$app/navigation';
+
     let user = {
         username: null,
         password: null,
+        role: null,
+        token: null,
     };
 
     async function signin() {
+        user.role = 'CLIENT';
+        authUser.set(user);
+        isLogged.set(true);
+        goto('/dashboard');
     }
 </script>
 

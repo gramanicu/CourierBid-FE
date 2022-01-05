@@ -7,13 +7,11 @@
         if (browser) {
             const isLoggedIn = get(isLogged);
 
-            if (isLoggedIn) {
+            if (isLoggedIn === 'true') {
                 return { status: 302, redirect: '/dashboard' };
-            } else {
-                return { status: 302, redirect: '/auth/signin' };
-            }
-        }
-
-        return {};
+            } else return {};
+        } else return {};
     }
 </script>
+
+<slot />
