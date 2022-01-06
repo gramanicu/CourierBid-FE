@@ -4,6 +4,15 @@
     export let name;
     export let value = '';
     export let error = null;
+
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher();
+    function input() {
+        dispatch('input', {
+            value,
+        });
+    }
 </script>
 
 <div class="form-control">
@@ -13,6 +22,7 @@
     <input
         bind:value
         type="text"
+        on:input={input}
         {name}
         {placeholder}
         class="{$$props.class} input  {!error ? 'input-primary' : 'input-error'} input-bordered" />

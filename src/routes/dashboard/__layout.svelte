@@ -22,8 +22,13 @@
 
     import { goto } from '$app/navigation';
     import { authUser } from '$stores/auth';
+    import { onMount } from 'svelte';
+    import { roleType } from '$lib/utils';
 
     const loggedUser = get(authUser).username;
+    const userRole = get(authUser).role;
+
+    let currPath = null;
 
     function signout() {
         isLogged.set(false);
@@ -31,7 +36,40 @@
         goto('/');
     }
 
-    const navItems = [{ label: 'Users', href: '#' }];
+    let navItems = [];
+    onMount(() => {
+        const html_tag = document.body.parentNode;
+
+        currPath = window.location.pathname;
+
+        switch (userRole) {
+            case roleType.ADMIN:
+                {
+                    html_tag.dataset.theme = 'halloween';
+                    navItems.push({ label: 'Users', href: '/dashboard/users' });
+                    navItems.push({ label: 'Cargo Types', href: '/dashboard/cargotypes' });
+                    navItems.push({ label: 'Truck Models', href: '/dashboard/truckmodels' });
+                }
+                break;
+            case roleType.TRANSPORTER:
+                {
+                    html_tag.dataset.theme = 'cupcake';
+                    navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
+                    navItems.push({ label: 'Truck Management', href: '/dashboard/trucks' });
+                    navItems.push({ label: 'Add Truck', href: '/dashboard/trucks/new' });
+                    navItems.push({ label: 'Publish Offer', href: '/dashboard/offers/new' });
+                }
+                break;
+            case roleType.CLIENT:
+                {
+                    html_tag.dataset.theme = 'dark';
+                    navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
+                    navItems.push({ label: 'Request Transport', href: '/dashboard/expedition/new' });
+                }
+                break;
+        }
+        navItems = navItems;
+    });
 </script>
 
 <div class="drawer drawer-mobile h-screen">
@@ -102,8 +140,10 @@
                     {#each navItems as link}
                         <li>
                             <a
+                                class="{link.href == currPath ? 'active' : ''} mb-1"
                                 href={link.href}
                                 on:click={() => {
+                                    currPath = link.href;
                                     document.getElementById('layoutDrawer').click();
                                 }}>{link.label}</a>
                         </li>
