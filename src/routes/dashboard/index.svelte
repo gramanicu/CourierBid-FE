@@ -1,16 +1,10 @@
 <script>
     import { authUser } from '$stores/auth';
-    import Admin from './_admin/admin.svelte';
-    import Client from './_client/client.svelte';
-    import Transporter from './_transporter/transporter.svelte';
+    import { get } from 'svelte/store';
+    import { browser } from '$app/env';
 
-    const role = $authUser.role;
+    const role = get(authUser).role;
+    if (browser) {
+        console.log(role);
+    }
 </script>
-
-{#if role === 'ADMIN'}
-    <Admin />
-{:else if role == 'TRANSPORTER'}
-    <Transporter />
-{:else if role == 'CLIENT'}
-    <Client />
-{/if}

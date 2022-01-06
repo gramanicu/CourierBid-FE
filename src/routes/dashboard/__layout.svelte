@@ -1,5 +1,5 @@
 <script context="module">
-    import { authUser, isLogged } from '$stores/auth';
+    import { isLogged } from '$stores/auth';
     import { get } from 'svelte/store';
     import { browser } from '$app/env';
 
@@ -21,6 +21,9 @@
     import DownSvg from '$components/svg/DownSvg.svelte';
 
     import { goto } from '$app/navigation';
+    import { authUser } from '$stores/auth';
+
+    const loggedUser = get(authUser).username;
 
     function signout() {
         isLogged.set(false);
@@ -49,7 +52,7 @@
 
             <div class="navbar-end lg:justify-self-end lg:w-full hidden lg:flex flex-row gap-1">
                 <!-- Logged In Username -->
-                <p>{$authUser.username}</p>
+                <p>{loggedUser}</p>
                 <!-- User dropdown menu -->
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" class="btn btn-circle btn-ghost btn-xs text-info">

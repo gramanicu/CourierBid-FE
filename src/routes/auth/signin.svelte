@@ -16,7 +16,7 @@
     };
 
     async function signin() {
-        user.role = 'CLIENT';
+        user.role = 'TRANSPORTER';
         authUser.set(user);
         isLogged.set(true);
         goto('/dashboard');
