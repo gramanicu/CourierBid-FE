@@ -1,6 +1,5 @@
 <script context="module">
     import { roleType, roleGuard } from '$lib/utils';
-    import { vars } from '$lib/vars';
 
     const permittedRoles = [roleType.TRANSPORTER, roleType.CLIENT];
 
@@ -11,39 +10,21 @@
 
 <script>
     import { onMount } from 'svelte';
-    import { browser } from '$app/env';
-
+    import { vars } from '$lib/vars';
     onMount(() => {
-        if (browser) {
-            require(['esri/config', 'esri/Map', 'esri/views/MapView'], function (esriConfig, Map, MapView) {
-                esriConfig.apiKey = vars.esriApiKey;
-
-                const map = new Map({
-                    basemap: 'arcgis-topographic', // Basemap layer service
-                });
-
-                const view = new MapView({
-                    map: map,
-                    center: [-118.805, 34.027], // Longitude, latitude
-                    zoom: 13, // Zoom level
-                    container: 'viewDiv', // Div element
-                });
-            });
-        }
+        sessionStorage.setItem('esriApiKey', vars.esriApiKey);
     });
 </script>
 
-<svelte:head>
-    <script src="https://js.arcgis.com/4.22/"></script>
-</svelte:head>
+<div id="arcgis-map" />
 
-<div id="viewDiv" />
+<style lang="scss">
+    @import 'https://js.arcgis.com/4.22/@arcgis/core/assets/esri/themes/dark/main.css';
 
-<link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css" />
-
-<style>
-    #viewDiv {
-        height: 400px;
-        width: 400px;
+    #arcgis-map {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
     }
 </style>

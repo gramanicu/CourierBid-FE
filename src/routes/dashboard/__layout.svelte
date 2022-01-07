@@ -72,6 +72,12 @@
     });
 </script>
 
+<svelte:head>
+    <base href="/" />
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script src="./js/findRoute.js"></script>
+</svelte:head>
+
 <div class="drawer drawer-mobile h-screen">
     <!-- Drawer toggler (hidden) -->
     <input id="layoutDrawer" type="checkbox" class="drawer-toggle" />
