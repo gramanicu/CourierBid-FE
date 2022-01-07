@@ -4,8 +4,12 @@
     export let visible = false;
     export let is_valid = false;
 
+    // Testing
+    let position_end = null;
+
     let city = '';
     let position = null;
+    let viewObject = null;
     let mapObject = null;
 
     onMount(() => {
@@ -13,23 +17,53 @@
     });
 
     function updateCity(data) {
-        city = data[0].address;
-        position = {
-            lat: data[0].location.latitude,
-            lng: data[0].location.longitude,
-        };
+        if (data.length !== 0) {
+            city = data[0].address;
+            if (!position) {
+                position = {
+                    lat: data[0].location.latitude,
+                    lng: data[0].location.longitude,
+                };
+                window.centerMap(viewObject, position);
+                window.mapAddPoint(viewObject, position, 'start');
+            } else {
+                position_end = {
+                    lat: data[0].location.latitude,
+                    lng: data[0].location.longitude,
+                };
+                window.centerMap(viewObject, position_end);
+                window.mapAddPoint(viewObject, position_end, 'end');
+            }
+
+            // window.mapRemovePoints(viewObject);
+        } else {
+            city = 'No results';
+        }
     }
 
-    function mapLoadCallback(map) {
+    function mapLoadCallback(map, view) {
         mapObject = map;
+        viewObject = view;
+    }
+
+    function routeComputedCallback(length) {
+        console.log(`Length of route is ${length} km`);
     }
 
     function loadMap() {
         document.querySelector('#arcgis-map').innerHTML = '';
         setTimeout(() => {
-            window.getCityCoordinates('Braila', updateCity);
-
             window.loadEsriMap('arcgis-map', mapLoadCallback);
+
+            window.getCityCoordinates('Braila', updateCity);
+            setTimeout(() => {
+                window.getCityCoordinates('Bucuresti', updateCity);
+
+                setTimeout(() => {
+                    console.log('Computing route');
+                    window.computeRoute(viewObject, routeComputedCallback);
+                }, 1000);
+            }, 1000);
         }, 100);
     }
     $: visible && loadMap();

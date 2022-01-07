@@ -1,6 +1,10 @@
 window.addEventListener('load', () => {
     window.getCityCoordinates = getCityCoordinates;
     window.loadEsriMap = loadMap;
+    window.centerMap = centerMap;
+    window.mapAddPoint = addPoint;
+    window.mapRemovePoints = clearPoints;
+    window.computeRoute = buildRoute;
 });
 
 function getCityCoordinates(city, callback) {
@@ -18,12 +22,20 @@ function getCityCoordinates(city, callback) {
                 .addressToLocations(geocodeUrl, {
                     address,
                     categories: 'City',
+                    countryCode: 'RO',
                 })
                 .then(function (data) {
                     callback(data);
                 });
         });
     }
+}
+
+function centerMap(view, point) {
+    view.goTo({
+        center: [point.lng, point.lat],
+        zoom: 8,
+    });
 }
 
 function loadMap(containerId, callback) {
@@ -42,9 +54,84 @@ function loadMap(containerId, callback) {
                 container: containerId, // Div element
             });
 
-            callback(view);
+            callback(map, view);
         });
     }
+}
+
+function clearPoints(view) {
+    if (sessionStorage.getItem('esriApiKey') != '') {
+        view.graphics.removeAll();
+    }
+}
+
+function addPoint(view, location, type) {
+    if (sessionStorage.getItem('esriApiKey') != '') {
+        require(['esri/Graphic'], function (Graphic) {
+            if (view.graphics.length < 2) {
+                const point = {
+                    type: 'point',
+                    longitude: location.lng,
+                    latitude: location.lat,
+                };
+
+                const color = type === 'start' ? [255, 255, 0] : [255, 0, 0];
+
+                const graphic = new Graphic({
+                    symbol: {
+                        type: 'simple-marker',
+                        color: color,
+                        size: '12px',
+                        outline: {
+                            color: [0, 0, 0],
+                            width: 2,
+                        },
+                    },
+                    geometry: point,
+                });
+                view.graphics.add(graphic);
+            }
+        });
+    }
+}
+
+function buildRoute(view, callback) {
+    require([
+        'esri/rest/route',
+        'esri/rest/support/RouteParameters',
+        'esri/rest/support/FeatureSet',
+        'esri/geometry/geometryEngine',
+    ], function (route, RouteParameters, FeatureSet, geometryEngine) {
+        const routeParams = new RouteParameters({
+            stops: new FeatureSet({
+                features: view.graphics.toArray(),
+            }),
+
+            returnDirections: true,
+        });
+
+        const routeUrl = 'https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World';
+
+        route
+            .solve(routeUrl, routeParams)
+            .then(function (data) {
+                data.routeResults.forEach(function (result) {
+                    let routeLength = geometryEngine.geodesicLength(result.route.geometry, 'kilometers');
+                    callback(routeLength);
+
+                    result.route.symbol = {
+                        type: 'simple-line',
+                        color: [5, 150, 255],
+                        width: 3,
+                    };
+                    view.graphics.add(result.route);
+                });
+            })
+
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
 }
 
 function track() {
