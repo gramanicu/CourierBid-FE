@@ -5,7 +5,7 @@ window.addEventListener('load', () => {
 });
 
 function loadMap() {
-    if (sessionStorage.getItem('esriApiKey')) {
+    if (sessionStorage.getItem('esriApiKey') != '') {
         require(['esri/config', 'esri/Map', 'esri/views/MapView'], function (esriConfig, Map, MapView) {
             esriConfig.apiKey = sessionStorage.getItem('esriApiKey');
 
