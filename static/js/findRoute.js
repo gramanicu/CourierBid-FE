@@ -1,5 +1,11 @@
 window.addEventListener('load', () => {
     if (document.querySelectorAll('#arcgis-map').length > 0) {
+        loadMap();
+    }
+});
+
+function loadMap() {
+    if (sessionStorage.getItem('esriApiKey')) {
         require(['esri/config', 'esri/Map', 'esri/views/MapView'], function (esriConfig, Map, MapView) {
             esriConfig.apiKey = sessionStorage.getItem('esriApiKey');
 
@@ -14,5 +20,9 @@ window.addEventListener('load', () => {
                 container: 'arcgis-map', // Div element
             });
         });
+
+        return;
+    } else {
+        setTimeout(loadMap, 100);
     }
-});
+}
