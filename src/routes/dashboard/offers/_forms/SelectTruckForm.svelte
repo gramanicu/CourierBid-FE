@@ -49,8 +49,10 @@
                     <li>Brand - {model.brand}</li>
                     <li>Model - {model.name}</li>
                     <li>Usable Space - {model.dimensions} ({model.volume})</li>
-                    <li>Maximum Cargo Weight - {model.weight}KG</li>
-                    <li>Average Speed - {model.speed}KPH</li>
+                    <li>Maximum Cargo Weight - {model.weight} KG</li>
+                    <li>Average Speed - {model.speed} KPH</li>
+                    <li>Empty Price - {currentTruck.emptyPrice} RON</li>
+                    <li>Full Price - {currentTruck.fullPrice} RON</li>
                 {/await}
             </ul>
         </div>

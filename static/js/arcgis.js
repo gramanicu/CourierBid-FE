@@ -1,10 +1,53 @@
 window.addEventListener('load', () => {
-    if (document.querySelectorAll('#arcgis-map').length > 0) {
-        loadMap();
-    }
+    window.getCityCoordinates = getCityCoordinates;
+    window.loadEsriMap = loadMap;
 });
 
-function loadMap() {
+function getCityCoordinates(city, callback) {
+    if (sessionStorage.getItem('esriApiKey') != '') {
+        require(['esri/config', 'esri/rest/locator'], function (esriConfig, locator) {
+            esriConfig.apiKey = sessionStorage.getItem('esriApiKey');
+
+            const geocodeUrl = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer';
+
+            let address = {
+                city,
+            };
+
+            locator
+                .addressToLocations(geocodeUrl, {
+                    address,
+                    categories: 'City',
+                })
+                .then(function (data) {
+                    callback(data);
+                });
+        });
+    }
+}
+
+function loadMap(containerId, callback) {
+    if (sessionStorage.getItem('esriApiKey') != '') {
+        require(['esri/config', 'esri/Map', 'esri/views/MapView'], function (esriConfig, Map, MapView) {
+            esriConfig.apiKey = sessionStorage.getItem('esriApiKey');
+
+            const map = new Map({
+                basemap: 'arcgis-navigation',
+            });
+
+            const view = new MapView({
+                map: map,
+                center: [26.06, 46.06], //Longitude, latitude
+                zoom: 6,
+                container: containerId, // Div element
+            });
+
+            callback(view);
+        });
+    }
+}
+
+function track() {
     if (sessionStorage.getItem('esriApiKey') != '') {
         require([
             'esri/config',
@@ -36,6 +79,8 @@ function loadMap() {
             let address = {
                 city: 'brailsa',
             };
+
+            console.log('VVWE');
 
             locator
                 .addressToLocations(geocodeUrl, {
@@ -84,7 +129,6 @@ function loadMap() {
                     .solve(routeUrl, routeParams)
                     .then(function (data) {
                         data.routeResults.forEach(function (result) {
-                            console.log(result);
                             console.log(geometryEngine.geodesicLength(result.route.geometry, 'kilometers'));
                             result.route.symbol = {
                                 type: 'simple-line',
@@ -103,6 +147,6 @@ function loadMap() {
 
         return;
     } else {
-        setTimeout(loadMap, 100);
+        setTimeout(loadMap, 1000);
     }
 }

@@ -14,6 +14,7 @@
     import FormStepTracker from '$components/forms/FormStepTracker.svelte';
     import FormStepControls from '$components/forms/FormStepControls.svelte';
     import SelectTruckForm from './_forms/SelectTruckForm.svelte';
+    import SelectPickupForm from './_forms/SelectPickupForm.svelte';
 
     const steps = ['Truck', 'Pickup', 'Delivery', 'Information', 'Confirm'];
     let valids = [];
@@ -72,6 +73,7 @@
             </div>
             <div class="flex flex-col my-2 sm:my-4">
                 <SelectTruckForm bind:currentTruck={truck} visible={current_step === 1} bind:is_valid={valids[0]} />
+                <SelectPickupForm visible={current_step === 2} bind:is_valid={valids[1]} />
                 <!-- <TruckModelForm bind:currentModel={truck} visible={current_step === 1} bind:is_valid={valids[0]} />
                 <TruckInfoForm bind:information visible={current_step === 2} bind:is_valid={valids[1]} />
                 <ConfirmForm bind:truck bind:information visible={current_step === 3} bind:is_valid={valids[2]} /> -->

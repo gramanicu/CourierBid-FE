@@ -46,8 +46,8 @@
                 <li>Brand - {currentModel.brand}</li>
                 <li>Model - {currentModel.name}</li>
                 <li>Usable Space - {currentModel.dimensions} ({currentModel.volume})</li>
-                <li>Maximum Cargo Weight - {currentModel.weight}KG</li>
-                <li>Average Speed - {currentModel.speed}KPH</li>
+                <li>Maximum Cargo Weight - {currentModel.weight} KG</li>
+                <li>Average Speed - {currentModel.speed} KPH</li>
             </ul>
         </div>
     {/if}

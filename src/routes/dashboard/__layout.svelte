@@ -77,7 +77,7 @@
 <svelte:head>
     <base href="/" />
     <script src="https://js.arcgis.com/4.22/"></script>
-    <script src="./js/findRoute.js"></script>
+    <script src="./js/arcgis.js"></script>
 </svelte:head>
 
 <div class="drawer drawer-mobile h-screen">
