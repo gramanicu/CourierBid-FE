@@ -1,5 +1,6 @@
 <script context="module">
     import { roleType, roleGuard } from '$lib/utils';
+    import { vars } from '$lib/vars';
 
     const permittedRoles = [roleType.TRANSPORTER, roleType.CLIENT];
 
@@ -9,7 +10,6 @@
 </script>
 
 <script>
-    import { vars } from '$lib/vars';
     import { onMount } from 'svelte';
 
     onMount(() => {
@@ -24,21 +24,22 @@
                 map: map,
                 center: [-118.805, 34.027], // Longitude, latitude
                 zoom: 13, // Zoom level
-                container: 'view', // Div element
+                container: 'viewDiv', // Div element
             });
         });
     });
 </script>
 
 <svelte:head>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css" />
     <script src="https://js.arcgis.com/4.22/"></script>
 </svelte:head>
 
-<div id="view" />
+<div id="viewDiv" />
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css" />
 
 <style>
-    #view {
+    #viewDiv {
         height: 400px;
         width: 400px;
     }
