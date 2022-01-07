@@ -9,39 +9,36 @@
 </script>
 
 <script>
-    export const ssr = false;
-    import Map from '@arcgis/core/Map';
-    import MapView from '@arcgis/core/views/MapView';
-    import '@arcgis/core/assets/esri/themes/dark/main.css';
+    import { vars } from '$lib/vars';
+    import { onMount } from 'svelte';
 
-    let centerText;
-    const createMap = domNode => {
-        // Create the map
-        const map = new Map({
-            basemap: 'streets',
+    onMount(() => {
+        require(['esri/config', 'esri/Map', 'esri/views/MapView'], function (esriConfig, Map, MapView) {
+            esriConfig.apiKey = vars.esriApiKey;
+
+            const map = new Map({
+                basemap: 'arcgis-topographic', // Basemap layer service
+            });
+
+            const view = new MapView({
+                map: map,
+                center: [-118.805, 34.027], // Longitude, latitude
+                zoom: 13, // Zoom level
+                container: 'view', // Div element
+            });
         });
-        // Create the mapView from the map
-        const view = new MapView({
-            container: domNode,
-            map: map,
-            zoom: 8,
-            center: [-90, 38], // longitude, latitude
-        });
-        view.watch('center', center => {
-            const { latitude, longitude } = center;
-            centerText = `Lat: ${latitude.toFixed(2)} | Lon: ${longitude.toFixed(2)}`;
-        });
-    };
+    });
 </script>
 
-<div class="view" use:createMap />
+<svelte:head>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.22/"></script>
+</svelte:head>
 
-{#if centerText}
-    <p>{centerText}</p>
-{/if}
+<div id="view" />
 
 <style>
-    .view {
+    #view {
         height: 400px;
         width: 400px;
     }
