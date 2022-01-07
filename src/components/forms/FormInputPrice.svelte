@@ -30,7 +30,7 @@
     <label class="input-group input-group-md">
         <input
             bind:value
-            type="text"
+            type="number"
             on:input={changed}
             {name}
             {placeholder}

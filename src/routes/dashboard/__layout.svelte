@@ -24,6 +24,7 @@
     import { authUser } from '$stores/auth';
     import { onMount } from 'svelte';
     import { roleType } from '$lib/utils';
+    import { vars } from '$lib/vars';
 
     const loggedUser = get(authUser).username;
     const userRole = get(authUser).role;
@@ -41,6 +42,7 @@
         const html_tag = document.body.parentNode;
 
         currPath = window.location.pathname;
+        sessionStorage.setItem('esriApiKey', vars.esriApiKey);
 
         switch (userRole) {
             case roleType.ADMIN:

@@ -1,7 +1,7 @@
 <script>
     import FormSelect from '$components/forms/FormSelect.svelte';
     import { callBackend } from '$lib/backend';
-    import { onDestroy, onMount } from 'svelte';
+    import { onMount } from 'svelte';
 
     let models = [];
     let trucks = [];
@@ -30,8 +30,6 @@
         is_valid = true;
         currentModel = trucks.find(o => o.modelId === modelId);
     }
-
-    onDestroy(() => {});
 </script>
 
 {#if visible}

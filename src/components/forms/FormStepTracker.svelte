@@ -10,14 +10,18 @@
         </li>
     {/each}
 </ul>
+<hr class="hidden sm:block" />
 
 <style lang="scss">
     .steps {
         .step {
             @media only screen and (max-width: 478px) {
                 font-size: 0;
-                margin-bottom: -30px;
+                margin-bottom: -24px;
+                min-width: 10px;
             }
+            font-size: 12px;
+            // margin-bottom: -24px;
 
             &:after {
                 font-size: 20px;

@@ -10,11 +10,11 @@
 
 <script>
     import FormStepTracker from '$components/forms/FormStepTracker.svelte';
-    import FromStepControls from '$components/forms/FromStepControls.svelte';
+    import FormStepControls from '$components/forms/FormStepControls.svelte';
     import TruckModelForm from './_forms/TruckModelForm.svelte';
     import TruckInfoForm from './_forms/TruckInfoForm.svelte';
-    import { onMount } from 'svelte';
     import ConfirmForm from './_forms/ConfirmForm.svelte';
+    import { onMount } from 'svelte';
     import { callBackend } from '$lib/backend';
     import { goto } from '$app/navigation';
 
@@ -38,7 +38,7 @@
                 courierId: 1,
                 emptyPrice: information.empty_price,
                 fullPrice: information.full_price,
-                registry_plate: information.license_plate,
+                registryPlate: information.license_plate,
             });
         } catch (err) {
             console.error(err);
@@ -75,14 +75,13 @@
             <div class="card-title">
                 <FormStepTracker {steps} {current_step} />
             </div>
-            <hr />
             <div class="flex flex-col my-2 sm:my-4">
                 <TruckModelForm bind:currentModel={truck} visible={current_step === 1} bind:is_valid={valids[0]} />
                 <TruckInfoForm bind:information visible={current_step === 2} bind:is_valid={valids[1]} />
                 <ConfirmForm bind:truck bind:information visible={current_step === 3} bind:is_valid={valids[2]} />
             </div>
             <div class="card-actions">
-                <FromStepControls
+                <FormStepControls
                     bind:valids
                     bind:current_step
                     bind:step_count={steps.length}

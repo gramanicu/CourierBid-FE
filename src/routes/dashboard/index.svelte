@@ -14,6 +14,8 @@
             goto('/dashboard/contracts');
         } else if (role === roleType.ADMIN) {
             goto('/dashboard/users');
+        } else {
+            goto('/auth/signin');
         }
     });
 </script>
