@@ -26,13 +26,13 @@
             currency="RON"
             name="empty_price"
             placeholder="Empty Price"
-            label="Empty Price" />
+            label="Empty Price (per km)" />
         <FormInputPrice
             on:input={checkValid}
             bind:value={information.full_price}
             currency="RON"
             name="full_price"
-            placeholder="Full Price"
+            placeholder="Full Price (per km)"
             label="Full Price" />
     </div>
     <FormInputText

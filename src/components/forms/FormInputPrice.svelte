@@ -9,17 +9,10 @@
 
     const dispatch = createEventDispatcher();
     function changed() {
-        error = !isNumeric(value);
-
         if (value)
             dispatch('input', {
                 value,
             });
-    }
-
-    let error = null;
-    function isNumeric(value) {
-        return /^-?\d+$/.test(value);
     }
 </script>
 
@@ -30,18 +23,14 @@
     <label class="input-group input-group-md">
         <input
             bind:value
+            step="0.01"
             type="number"
             on:input={changed}
             {name}
             {placeholder}
-            class="input {!error ? 'input-primary' : 'input-error'} input-bordered input-md" />
+            class="input  input-bordered input-md" />
         <span>{currency}</span>
     </label>
-    {#if error}
-        <label for={name} class="label">
-            <span class="label-text-alt">Please enter a number</span>
-        </label>
-    {/if}
 </div>
 
 <style lang="scss">

@@ -14,7 +14,7 @@
         const res = await callBackend('api/trucks/getall', 'GET');
         res.forEach(truck => {
             // TODO - check against the current courier
-            if (truck.courierId == 1) {
+            if (truck.courierId == '97f42ce5-c471-4b99-b838-1a8253ea88d1') {
                 truck.label = `${truck.registryPlate}`;
                 truck.value = truck.truckId;
                 trucks = [...trucks, truck];

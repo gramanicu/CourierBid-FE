@@ -56,10 +56,6 @@
     }
 
     function loadMap() {
-        console.log(truck);
-        console.log(information);
-        console.log(startPosition);
-        console.log(endPosition);
         document.querySelector('#route-map').innerHTML = '';
         setTimeout(() => {
             window.loadEsriMap('route-map', mapLoadCallback);
@@ -68,10 +64,25 @@
     $: visible && loadMap();
 </script>
 
-{#if visible}
-    <p>{routeLength} km</p>
-{/if}
 <div class={!visible ? 'hidden' : 'flex'} id="route-map" />
+
+{#if visible}
+    <div class="prose mt-4 max-w-xs">
+        <h2 class="my-1">Truck</h2>
+        <p class="my-1">
+            Registry plate - {truck.registryPlate}<br />
+            Avg. Speed - {truck.model.speed}
+        </p>
+        <h2 class="my-1">Route</h2>
+        <p class="my-1">
+            {startPosition.city} to {endPosition.city}<br />
+            Length - {Math.floor(information.length)} km Duration - {information.duration}<br />
+            Departure - {information.departure.toLocaleString()}<br />
+            Arrival - {information.arrival.toLocaleString()}
+        </p>
+        <small class="my-1">*these values are approximate</small>
+    </div>
+{/if}
 
 <style lang="scss">
     #route-map {

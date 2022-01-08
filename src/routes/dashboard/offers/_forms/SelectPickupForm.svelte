@@ -19,6 +19,7 @@
             position = {
                 lat: data[0].location.latitude,
                 lng: data[0].location.longitude,
+                city: city,
             };
             window.centerMap(viewObject, position);
             window.mapAddPoint(viewObject, position, 'start');

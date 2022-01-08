@@ -73,12 +73,17 @@
     function computeArrival() {
         arrivalDateTime = new Date(startDate);
         arrivalDateTime = new Date(arrivalDateTime.setHours(startTime));
+        let startDateTime = arrivalDateTime;
+
         arrivalDateTime = new Date(arrivalDateTime.getTime() + 1000 * hmsToSecondsOnly(duration));
 
         information = {
+            departure: startDateTime,
             arrival: arrivalDateTime,
             length: routeLength,
-            fullPrice: truck.fullPrice * routeLength,
+            fullPrice: Math.floor(truck.fullPrice * routeLength),
+            emptyPrice: Math.floor(truck.emptyPrice * routeLength),
+            duration: duration,
         };
     }
 
@@ -89,12 +94,20 @@
     <div class="w-full shadow stats mb-4">
         <div class="stat place-items-center place-content-center">
             <div class="stat-title">Route Length</div>
-            <div class="stat-value">{Math.floor(routeLength)} KM</div>
+            {#if routeLength}
+                <div class="stat-value">{Math.floor(routeLength)} KM</div>
+            {:else}
+                <div class="stat-value">computing...</div>
+            {/if}
             <div class="stat-desc text-success">(shortest route)</div>
         </div>
         <div class="stat place-items-center place-content-center">
             <div class="stat-title">Route duration</div>
-            <div class="stat-value text-success">{duration}</div>
+            {#if duration}
+                <div class="stat-value text-success">{duration}</div>
+            {:else}
+                <div class="stat-value">computing...</div>
+            {/if}
             <div class="stat-desc text-success">(avg. speed {truck.model.speed} kph)</div>
         </div>
     </div>
@@ -108,12 +121,13 @@
     <div class="mt-4">
         {#if arrivalDateTime}
             <p class="mb-0">
-                Expected arrival - {arrivalDateTime.toLocaleDateString('ro-RO')}, {arrivalDateTime.toLocaleTimeString(
+                Expected arrival: {arrivalDateTime.toLocaleDateString('ro-RO')}, {arrivalDateTime.toLocaleTimeString(
                     'ro-RO'
                 )}
             </p>
-            <p>Full price - {truck.fullPrice * Math.floor(routeLength)} RON</p>
-            <p>Empty price - {truck.emptyPrice} RON/km</p>
+            <p>
+                Route cost: {Math.floor(truck.emptyPrice * routeLength)} - {Math.floor(truck.fullPrice * routeLength)} RON
+            </p>
         {/if}
     </div>
 {/if}

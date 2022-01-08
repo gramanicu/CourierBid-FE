@@ -35,7 +35,7 @@
             await callBackend('api/trucks/add', 'POST', {
                 modelId: truck.modelId,
                 // TODO - load the current users id
-                courierId: 1,
+                courierId: '97f42ce5-c471-4b99-b838-1a8253ea88d1',
                 emptyPrice: information.empty_price,
                 fullPrice: information.full_price,
                 registryPlate: information.license_plate,

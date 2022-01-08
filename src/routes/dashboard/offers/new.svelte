@@ -32,14 +32,25 @@
     }
 
     async function submit() {
-        return;
         try {
             await callBackend('api/transports/add', 'POST', {
-                // truckId,
-                // startLocation,
-                // startTime,
-                // endLocation,
-                // endTime
+                truckId: truck.truckId,
+                startLocation: JSON.stringify({
+                    coordinates: {
+                        lat: start.lat,
+                        lng: start.lng,
+                    },
+                    city: start.city,
+                }),
+                endLocation: JSON.stringify({
+                    coordinates: {
+                        lat: end.lat,
+                        lng: end.lng,
+                    },
+                    city: end.city,
+                }),
+                startTime: information.departure,
+                endTime: information.arrival,
             });
         } catch (err) {
             console.error(err);
@@ -74,7 +85,7 @@
             <div class="card-title">
                 <FormStepTracker {steps} {current_step} />
             </div>
-            <div class="flex flex-col my-2 sm:my-4">
+            <div class="flex flex-col mt-2 sm:mt-4">
                 <SelectTruckForm bind:currentTruck={truck} visible={current_step === 1} bind:is_valid={valids[0]} />
                 <SelectPickupForm bind:position={start} visible={current_step === 2} bind:is_valid={valids[1]} />
                 <SelectDeliveryForm bind:position={end} visible={current_step === 3} bind:is_valid={valids[2]} />
