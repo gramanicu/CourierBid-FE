@@ -15,6 +15,9 @@
     import FormStepControls from '$components/forms/FormStepControls.svelte';
     import SelectTruckForm from './_forms/SelectTruckForm.svelte';
     import SelectPickupForm from './_forms/SelectPickupForm.svelte';
+    import SelectDeliveryForm from './_forms/SelectDeliveryForm.svelte';
+    import ExtraInformationForm from './_forms/ExtraInformationForm.svelte';
+    import ConfirmForm from './_forms/ConfirmForm.svelte';
 
     const steps = ['Truck', 'Pickup', 'Delivery', 'Information', 'Confirm'];
     let valids = [];
@@ -73,10 +76,22 @@
             </div>
             <div class="flex flex-col my-2 sm:my-4">
                 <SelectTruckForm bind:currentTruck={truck} visible={current_step === 1} bind:is_valid={valids[0]} />
-                <SelectPickupForm visible={current_step === 2} bind:is_valid={valids[1]} />
-                <!-- <TruckModelForm bind:currentModel={truck} visible={current_step === 1} bind:is_valid={valids[0]} />
-                <TruckInfoForm bind:information visible={current_step === 2} bind:is_valid={valids[1]} />
-                <ConfirmForm bind:truck bind:information visible={current_step === 3} bind:is_valid={valids[2]} /> -->
+                <SelectPickupForm bind:position={start} visible={current_step === 2} bind:is_valid={valids[1]} />
+                <SelectDeliveryForm bind:position={end} visible={current_step === 3} bind:is_valid={valids[2]} />
+                <ExtraInformationForm
+                    {truck}
+                    bind:information
+                    startPosition={start}
+                    endPosition={end}
+                    visible={current_step === 4}
+                    bind:is_valid={valids[3]} />
+                <ConfirmForm
+                    {truck}
+                    {information}
+                    startPosition={start}
+                    endPosition={end}
+                    visible={current_step === 5}
+                    bind:is_valid={valids[4]} />
             </div>
             <div class="card-actions">
                 <FormStepControls
