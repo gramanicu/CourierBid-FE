@@ -3,6 +3,8 @@
     export let name;
     export let options; // An array of the selects options ({value, label})
     export let value;
+    export let limitedWidth = true;
+    export let primary = false;
 
     import { createEventDispatcher } from 'svelte';
 
@@ -15,7 +17,11 @@
 </script>
 
 {#if options && options.length > 0}
-    <select bind:value {name} on:change={selected} class="select select-bordered w-full max-w-xs">
+    <select
+        bind:value
+        {name}
+        on:change={selected}
+        class="select {primary ? 'select-primary' : ''} select-bordered w-full {limitedWidth ? 'max-w-xs' : ''}">
         {#if placeholder}
             <option disabled="disabled" value={null} selected="selected">{placeholder}</option>
         {/if}

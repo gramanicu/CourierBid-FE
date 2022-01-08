@@ -41,14 +41,19 @@
         placeholder="Select the model of the truck" />
 
     {#if modelId && currentModel}
-        <div class="prose mt-2">
-            <ul class="text-base-content list-unstyled">
-                <li>Brand - {currentModel.brand}</li>
-                <li>Model - {currentModel.name}</li>
-                <li>Usable Space - {currentModel.dimensions} ({currentModel.volume})</li>
-                <li>Maximum Cargo Weight - {currentModel.weight} KG</li>
-                <li>Average Speed - {currentModel.speed} KPH</li>
-            </ul>
+        <div class="prose mt-4 w-full pr-4">
+            <div class="flex flex-col justify-between w-full">
+                <p class="my-1">
+                    Brand: {currentModel.brand}<br />
+                    Model: {currentModel.name}<br />
+                    Avg. Speed: {currentModel.speed} kph
+                </p>
+                <p class="my-1">
+                    Dimensions: {currentModel.dimensions} m<br />
+                    Volume: {currentModel.volume} m³<br />
+                    Max. Cargo: {currentModel.weight} kg
+                </p>
+            </div>
         </div>
     {/if}
 {/if}

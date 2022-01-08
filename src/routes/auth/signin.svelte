@@ -7,6 +7,8 @@
 
     import { authUser, isLogged } from '$stores/auth';
     import { goto } from '$app/navigation';
+    import { callBackend } from '$lib/backend';
+    import { roleType } from '$lib/utils';
 
     let user = {
         username: null,
@@ -16,8 +18,33 @@
     };
 
     async function signin() {
-        user.role = 'TRANSPORTER';
-        authUser.set(user);
+        if (user.username == null || user.password == null) return;
+
+        try {
+            let res = await callBackend('user/signin', 'POST', {
+                username: user.username,
+                password: user.password,
+            });
+
+            // TODO - load the role type and id
+            let authU = {
+                id: '4388aa03-5335-492a-b488-b6a613463a33',
+                username: user.username,
+                token: res.token,
+                role: roleType.TRANSPORTER,
+            };
+
+            authUser.set(authU);
+        } catch (err) {
+            user = {
+                username: null,
+                password: null,
+                role: null,
+                token: null,
+            };
+            console.log(err);
+        }
+
         isLogged.set(true);
         goto('/dashboard');
     }

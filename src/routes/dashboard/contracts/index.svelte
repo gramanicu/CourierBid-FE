@@ -1,6 +1,8 @@
 <script context="module">
     import { roleType, roleGuard } from '$lib/utils';
     import EditSvg from '$components/svg/EditSvg.svelte';
+    import Modal from '$components/modal/Modal.svelte';
+    import ModalToggle from '$components/modal/ModalToggle.svelte';
 
     const permittedRoles = [roleType.TRANSPORTER, roleType.CLIENT];
 
@@ -35,20 +37,14 @@
                 <td class="hidden lg:table-cell">data</td>
                 <td class="hidden lg:table-cell">data</td>
                 <td>data</td>
-                <td class="sticky left-0 z-10 cursor-pointer" on:click={openModal(0)}>
-                    <label for="edit-modal"><EditSvg /></label>
+                <td on:click={openModal(0)}>
+                    <ModalToggle name="edit-modal"><EditSvg class="cursor-pointer" /></ModalToggle>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <input type="checkbox" id="edit-modal" class="modal-toggle" />
-    <div class="modal">
-        <div class="modal-box">
-            <div class="modal-action">
-                <label for="edit-modal" class="btn btn-success">Save</label>
-                <label for="edit-modal" class="btn">Close</label>
-            </div>
-        </div>
-    </div>
+    <Modal name="edit-modal" successBtnName="Save">
+        <div>HELLO</div>
+    </Modal>
 </div>

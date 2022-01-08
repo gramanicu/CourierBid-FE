@@ -17,6 +17,8 @@
     import { onMount } from 'svelte';
     import { callBackend } from '$lib/backend';
     import { goto } from '$app/navigation';
+    import { get } from 'svelte/store';
+    import { authUser } from '$stores/auth';
 
     const steps = ['Select model', 'Plate & Prices', 'Confirm'];
     let valids = [];
@@ -32,14 +34,17 @@
 
     async function submit() {
         try {
-            await callBackend('api/trucks/add', 'POST', {
-                modelId: truck.modelId,
-                // TODO - load the current users id
-                courierId: '97f42ce5-c471-4b99-b838-1a8253ea88d1',
-                emptyPrice: information.empty_price,
-                fullPrice: information.full_price,
-                registryPlate: information.license_plate,
-            });
+            if (get(authUser).id) {
+                await callBackend('api/trucks/add', 'POST', {
+                    modelId: truck.modelId,
+                    courierId: get(authUser).id,
+                    emptyPrice: information.empty_price,
+                    fullPrice: information.full_price,
+                    registryPlate: information.license_plate,
+                });
+            } else {
+                return;
+            }
         } catch (err) {
             console.error(err);
             return;

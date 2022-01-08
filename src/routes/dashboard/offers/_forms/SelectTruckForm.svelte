@@ -1,7 +1,9 @@
 <script>
     import FormSelect from '$components/forms/FormSelect.svelte';
     import { callBackend } from '$lib/backend';
+    import { authUser } from '$stores/auth';
     import { onMount } from 'svelte';
+    import { get } from 'svelte/store';
 
     let trucks = [];
     export let currentTruck = null;
@@ -14,7 +16,7 @@
         const res = await callBackend('api/trucks/getall', 'GET');
         res.forEach(truck => {
             // TODO - check against the current courier
-            if (truck.courierId == '97f42ce5-c471-4b99-b838-1a8253ea88d1') {
+            if (truck.courierId === get(authUser).id) {
                 truck.label = `${truck.registryPlate}`;
                 truck.value = truck.truckId;
                 trucks = [...trucks, truck];

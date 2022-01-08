@@ -4,16 +4,31 @@
     import FormInputPassword from '$components/forms/FormInputPassword.svelte';
     import FormLink from '$components/forms/FormLink.svelte';
     import FormButton from '$components/forms/FormButton.svelte';
+    import { callBackend } from '$lib/backend';
+    import FormSelect from '$components/forms/FormSelect.svelte';
+    import { roleType } from '$lib/utils';
+    import { goto } from '$app/navigation';
 
     let confirmPassword = null;
     let user = {
         username: null,
-        firstName: null,
-        lastName: null,
         email: null,
         password: null,
-        enabled: true,
+        firstName: null,
+        lastName: null,
+        role: null,
     };
+
+    let roles = [
+        {
+            value: roleType.CLIENT,
+            label: 'Client',
+        },
+        {
+            value: roleType.TRANSPORTER,
+            label: 'Transporter',
+        },
+    ];
 
     function validateEmail(email) {
         const re =
@@ -21,7 +36,22 @@
         return re.test(String(email).toLowerCase());
     }
 
-    async function signup() {}
+    async function signup() {
+        if (!validateEmail(user.email)) {
+            return;
+        }
+
+        if (!user.username || !user.firstName || !user.lastName || !user.password || !user.role) {
+            return;
+        }
+
+        try {
+            await callBackend('user/signup', 'POST', user);
+            goto('/auth/signin');
+        } catch (err) {
+            console.error(err);
+        }
+    }
 </script>
 
 <div class="flex flex-col justify-center items-center w-full h-full screen-container">
@@ -39,6 +69,18 @@
             name="email"
             placeholder=" Email"
             label="Email" />
+        <div class="form-control">
+            <label for="Account type" class="label">
+                <span class="label-text">Account type</span>
+            </label>
+            <FormSelect
+                bind:value={user.role}
+                options={roles}
+                name="Account type"
+                limitedWidth={false}
+                primary={true}
+                placeholder="Select type" />
+        </div>
         <span class="mb-4 block" />
         <FormInputPassword
             bind:value={user.password}
@@ -49,6 +91,7 @@
             name="password"
             placeholder="Password"
             label="Password" />
+
         <FormInputPassword
             bind:value={confirmPassword}
             error={!user.password || !confirmPassword || user.password === confirmPassword
