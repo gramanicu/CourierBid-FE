@@ -36,7 +36,15 @@
     async function submit() {
         try {
             if (get(authUser).id) {
-                await callBackend('api/', 'POST', {});
+                const res = await callBackend('api/cargo/add', 'POST', {
+                    categoryId: cargo.cargoTypeId,
+                    weight: String(cargo.weight),
+                    volume: String(cargo.volume),
+                });
+
+                // TODO - finish call
+
+                console.log(res);
             } else {
                 return;
             }

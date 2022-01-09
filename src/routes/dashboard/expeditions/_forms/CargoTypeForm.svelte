@@ -23,6 +23,8 @@
 
     function onTypeSelect() {
         currentType = cargoTypes.find(o => o.cargoTypeId === typeId);
+        cargo.cargoTypeId = typeId;
+        cargo.type = currentType;
     }
 
     function checkValid() {

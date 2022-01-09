@@ -48,10 +48,6 @@
         return s;
     }
 
-    onMount(() => {
-        is_valid = true;
-    });
-
     function routeComputedCallback(length) {
         routeLength = length;
         duration = String((length / truck.model.speed) * 3600).toHHMMSS();

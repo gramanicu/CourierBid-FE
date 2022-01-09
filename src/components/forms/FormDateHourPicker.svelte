@@ -24,13 +24,13 @@
     });
 </script>
 
-<div class="form-control mb-4">
+<div class="form-control">
     <label for="{name}-date" class="label">
         <span class="label-text">{label} date</span>
     </label>
     <input name="{name}-date" type="date" bind:value={date} on:input={dateChange} class="input input-primary" />
 </div>
-<div class="form-control">
+<div class="form-control mb-2">
     <label for="{name}-hour" class="label">
         <span class="label-text">{label} hour - {hour} {hour >= 12 ? 'PM' : 'AM'}</span>
     </label>

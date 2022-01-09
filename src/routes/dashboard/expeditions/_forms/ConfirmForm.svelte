@@ -16,22 +16,37 @@
 
 {#if visible}
     {#if info && cargo && route}
-        <div class="prose mt-4 w-full pr-4">
+        <div class="prose w-full">
             <div class="flex flex-col justify-between w-full">
+                <h2>Cargo</h2>
                 <p class="my-1">
-                    Brand: {info.brand}<br />
-                    Model: {info.name}<br />
-                    Registry Plate: {info.license_plate}<br />
-                    Full Price: {info.full_price} RON/km<br />
-                    Empty Price: {info.empty_price} RON/km
+                    Cargo Type: {cargo.type.name}<br />
+                    Budget: {cargo.budget} RON<br />
+                    Volume: {cargo.volume} m³<br />
+                    Weight: {cargo.weight} kg<br />
                 </p>
+                <h2>Route</h2>
                 <p class="my-1">
-                    Avg. Speed: {info.speed} kph<br />
-                    Dimensions: {info.dimensions} m<br />
-                    Volume: {info.volume} m³<br />
-                    Max. Cargo: {info.weight} kg
+                    {route.startCity} to {route.endCity}<br />
+                    Length: {Math.floor(route.length)} km<br />
+                </p>
+                <h2>Pickup & Delivery Times</h2>
+                <p class="my-1">
+                    Departure - {info.pickupTime.toLocaleString()}<br />
+                    Arrival - {info.deliveryTime.toLocaleString()}<br />
+                    Earliest Departure - {info.pickupLimit.toLocaleString()}<br />
+                    Latest Arrival - {info.deliveryLimit.toLocaleString()}
                 </p>
             </div>
         </div>
     {/if}
 {/if}
+
+<style lang="scss">
+    .prose {
+        h2 {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>

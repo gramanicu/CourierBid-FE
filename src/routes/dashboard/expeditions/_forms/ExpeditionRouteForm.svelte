@@ -15,6 +15,7 @@
 
     function updateStartCity(data) {
         if (data.length !== 0) {
+            route.startCity = data[0].address;
             const position = {
                 lat: data[0].location.latitude,
                 lng: data[0].location.longitude,
@@ -27,13 +28,14 @@
             route.start = position;
             verifyPoints();
         } else {
-            city = 'No results';
+            route.startCity = 'No results';
         }
         loadingStart = false;
     }
 
     function updateEndCity(data) {
         if (data.length !== 0) {
+            route.endCity = data[0].address;
             const position = {
                 lat: data[0].location.latitude,
                 lng: data[0].location.longitude,
@@ -46,7 +48,7 @@
             route.end = position;
             verifyPoints();
         } else {
-            city = 'No results';
+            route.endCity = 'No results';
         }
         loadingEnd = false;
     }
@@ -78,6 +80,14 @@
     function mapLoadCallback(map, view) {
         mapObject = map;
         viewObject = view;
+
+        if (pointsSet) {
+            window.mapAddPoint(viewObject, route.start, 'start', () => {
+                window.mapAddPoint(viewObject, route.end, 'end', () => {
+                    window.computeRoute(viewObject, routeComputedCallback);
+                });
+            });
+        }
     }
 
     function verifyPoints() {
@@ -89,7 +99,6 @@
     function verifyValid() {
         if (pointsSet && route.length) {
             is_valid = true;
-            console.log(route);
         }
     }
 
@@ -183,5 +192,13 @@
         --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
         box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-desc {
+        font-size: 0.75rem;
     }
 </style>
