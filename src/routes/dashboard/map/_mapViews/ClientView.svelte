@@ -1,7 +1,7 @@
 <script>
     import { callBackend } from '$lib/backend';
 
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
 
     let mapObject = null;
     let viewObject = null;
@@ -26,9 +26,8 @@
         return startDate.addHours(-startDate.getTimezoneOffset() / 60);
     }
 
-    async function mapLoadCallback(map, view) {
-        mapObject = map;
-        viewObject = view;
+    async function loadTrucks() {
+        window.mapRemovePoints(viewObject);
 
         let trucks = [];
         let models = [];
@@ -90,9 +89,22 @@
                 <b>Expected arrival:</b> ${transport.endTime.toLocaleString()}<br>
                 <b>Progress:</b> ${Math.floor(progress)} %`;
 
-            window.addTruck(viewObject, transport.route[currLocation], title, description);
+            window.addTruck(viewObject, transport.route[currLocation], 'empty', title, description);
         });
     }
+
+    let updater = null;
+    async function mapLoadCallback(map, view) {
+        mapObject = map;
+        viewObject = view;
+
+        loadTrucks();
+        updater = setInterval(loadTrucks, 60 * 1000);
+    }
+
+    onDestroy(() => {
+        clearInterval(updater);
+    });
 
     function loadMap() {
         document.querySelector('#interactive-map').innerHTML = '';

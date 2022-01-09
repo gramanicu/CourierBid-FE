@@ -2,12 +2,14 @@
     import { callBackend } from '$lib/backend';
     import { authUser } from '$stores/auth';
     import { get } from 'svelte/store';
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
 
     let mapObject = null;
     let viewObject = null;
 
     let transports = [];
+
+    let updater = null;
 
     onMount(() => {
         loadMap();
@@ -91,12 +93,9 @@
                 <b>Expected arrival:</b> ${transport.endTime.toLocaleString()}<br>
                 <b>Progress:</b> ${Math.floor(progress)} %`;
 
-                window.addTruck(viewObject, transport.route[currLocation], title, description);
+                window.addTruck(viewObject, transport.route[currLocation], 'full', title, description);
             }
         });
-
-        setTimeout(loadTrucks, 15000);
-        // setTimeout(loadTrucks, 600000);
     }
 
     async function mapLoadCallback(map, view) {
@@ -104,7 +103,12 @@
         viewObject = view;
 
         loadTrucks();
+        updater = setInterval(loadTrucks, 60 * 1000);
     }
+
+    onDestroy(() => {
+        clearInterval(updater);
+    });
 
     function loadMap() {
         document.querySelector('#interactive-map').innerHTML = '';

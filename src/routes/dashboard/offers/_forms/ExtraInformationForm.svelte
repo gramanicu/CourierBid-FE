@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import FormDateHourPicker from '$components/forms/FormDateHourPicker.svelte';
+    import { callBackend } from '$lib/backend';
 
     export let visible = false;
     export let is_valid = false;
@@ -15,8 +16,43 @@
     let arrivalDateTime = null;
 
     onMount(() => {
-        is_valid = true;
+        is_valid = false;
     });
+
+    Date.prototype.addHours = function (h) {
+        this.setTime(this.getTime() + h * 60 * 60 * 1000);
+        return this;
+    };
+
+    function revertTimezone(dateString) {
+        let startDate = new Date(dateString);
+        return startDate.addHours(-startDate.getTimezoneOffset() / 60);
+    }
+
+    async function validate() {
+        try {
+            let validated = true;
+            const res = await callBackend('api/transports/getall', 'GET');
+
+            res.forEach(transport => {
+                if (transport.truckId === truck.truckId) {
+                    let startT = revertTimezone(transport.startTime);
+                    let endT = revertTimezone(transport.endTime);
+
+                    if (
+                        (startT > information.departure && startT < information.arrival) ||
+                        (endT > information.departure && endT < information.arrival)
+                    ) {
+                        validated = false;
+                    }
+                }
+            });
+
+            is_valid = validated;
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     let startDate = new Date().toISOString().slice(0, 10);
     let startTime = new Date().getHours();
@@ -85,6 +121,8 @@
             emptyPrice: Math.floor(truck.emptyPrice * routeLength),
             duration: duration,
         };
+
+        validate();
     }
 
     $: visible && computeRoute();
@@ -118,6 +156,10 @@
         on:dateChange={datePickedCallback}
         name="pickupTime"
         label="Pickup" />
+
+    {#if !is_valid}
+        <small class="mt-2 text-error">*overlaps another transport</small>
+    {/if}
     <div class="mt-4">
         {#if arrivalDateTime}
             <p class="mb-0">

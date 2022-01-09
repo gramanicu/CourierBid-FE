@@ -67,7 +67,7 @@ function clearPoints(view) {
     }
 }
 
-function addTruck(view, location, title, description) {
+function addTruck(view, location, type, title, description) {
     if (sessionStorage.getItem('esriApiKey') != '') {
         require(['esri/Graphic'], function (Graphic) {
             const point = {
@@ -76,7 +76,7 @@ function addTruck(view, location, title, description) {
                 latitude: location.lat,
             };
 
-            const color = [0, 0, 255];
+            const color = type === 'empty' ? [0, 255, 0] : [255, 0, 0];
 
             const attributes = {
                 Title: title,

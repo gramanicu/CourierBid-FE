@@ -150,12 +150,19 @@
                     {#each navItems as link}
                         <li>
                             <a
-                                class="{link.href == currPath ? 'active' : ''} mb-1"
+                                class="mb-1"
                                 href={link.href}
                                 on:click={() => {
                                     currPath = link.href;
                                     document.getElementById('layoutDrawer').click();
                                 }}>{link.label}</a>
+                            <!-- <a
+                                class="{link.href == currPath ? 'active' : ''} mb-1"
+                                href={link.href}
+                                on:click={() => {
+                                    currPath = link.href;
+                                    document.getElementById('layoutDrawer').click();
+                                }}>{link.label}</a> -->
                         </li>
                     {/each}
                 </ul>
