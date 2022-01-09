@@ -56,7 +56,7 @@
         name="endLocation"
         placeholder="Search for a city"
         label="Delivery City"
-        buttonText="Verifiy" />
+        buttonText="Verify" />
 {/if}
 <div class={!visible ? 'hidden' : 'flex'} id="delivery-map" />
 

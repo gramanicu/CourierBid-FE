@@ -4,6 +4,8 @@
     export let name;
     export let value = '';
     export let buttonText;
+    export let color = 0;
+    export let loading = false;
 
     import { createEventDispatcher } from 'svelte';
 
@@ -42,7 +44,17 @@
             on:keyup={keyup}
             {name}
             {placeholder}
-            class="w-full pr-16 input input-primary input-bordered" />
-        <button on:click={submit} class="absolute top-0  right-0 rounded-l-none btn btn-primary">{buttonText}</button>
+            class="w-full pr-16 input {color === 0
+                ? 'input-primary'
+                : color === 1
+                ? 'input-secondary'
+                : ''} input-bordered" />
+        <button
+            on:click={submit}
+            class="absolute top-0 {loading ? 'loading ' : ''} right-0 rounded-l-none btn {color === 0
+                ? 'btn-primary'
+                : color === 1
+                ? 'btn-secondary'
+                : ''}">{buttonText}</button>
     </div>
 </div>

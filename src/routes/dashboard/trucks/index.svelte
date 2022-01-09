@@ -47,7 +47,20 @@
         });
     });
 
-    function saveModal() {}
+    async function saveModal() {
+        const updatedTruck = Object.assign({}, editedTruck);
+        delete updatedTruck.model;
+        try {
+            await callBackend('api/trucks/update', 'POST', updatedTruck);
+
+            Object.assign(trucks[trucks.findIndex(el => el.truckId === editedTruck.truckId)], editedTruck);
+        } catch (err) {
+            console.log(err);
+        }
+
+        trucks = trucks;
+        editedTruck = null;
+    }
 
     function closeModel() {
         editedTruck = null;
@@ -74,7 +87,7 @@
             <tbody>
                 {#each trucks as truck, index}
                     <tr>
-                        <td class="sticky left-0 z-10">{index}</td>
+                        <td class="sticky left-0 z-10">{index + 1}</td>
                         <td>{truck.registryPlate}</td>
                         <td class="hidden lg:table-cell">{truck.model.brand}</td>
                         <td class="hidden lg:table-cell">{truck.model.name}</td>

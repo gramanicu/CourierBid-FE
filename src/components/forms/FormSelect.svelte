@@ -5,6 +5,7 @@
     export let value;
     export let limitedWidth = true;
     export let primary = false;
+    export let label = null;
 
     import { createEventDispatcher } from 'svelte';
 
@@ -17,6 +18,11 @@
 </script>
 
 {#if options && options.length > 0}
+    {#if label}
+        <label for={name} class="label">
+            <span class="label-text">{label}</span>
+        </label>
+    {/if}
     <select
         bind:value
         {name}

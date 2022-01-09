@@ -56,7 +56,7 @@
         name="startLocation"
         placeholder="Search for a city"
         label="Pickup City"
-        buttonText="Verifiy" />
+        buttonText="Verify" />
 {/if}
 <div class={!visible ? 'hidden' : 'flex'} id="pickup-map" />
 

@@ -15,7 +15,6 @@
     onMount(async () => {
         const res = await callBackend('api/trucks/getall', 'GET');
         res.forEach(truck => {
-            // TODO - check against the current courier
             if (truck.courierId === get(authUser).id) {
                 truck.label = `${truck.registryPlate}`;
                 truck.value = truck.truckId;

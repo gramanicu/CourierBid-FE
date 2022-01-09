@@ -57,16 +57,3 @@
         </div>
     {/if}
 {/if}
-
-<style lang="scss">
-    .prose ul > li:before {
-        content: '';
-        position: absolute;
-        background-color: #d4d4d8;
-        border-radius: 50%;
-        width: 0.375 em;
-        height: 0.375 em;
-        top: 0.6875 em;
-        left: 0.25 em;
-    }
-</style>

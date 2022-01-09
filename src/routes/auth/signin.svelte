@@ -26,12 +26,11 @@
                 password: user.password,
             });
 
-            // TODO - load the role type and id
             let authU = {
-                id: '4388aa03-5335-492a-b488-b6a613463a33',
+                id: res.userid,
                 username: user.username,
                 token: res.token,
-                role: roleType.TRANSPORTER,
+                role: res.role,
             };
 
             authUser.set(authU);

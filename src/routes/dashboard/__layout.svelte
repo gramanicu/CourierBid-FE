@@ -66,7 +66,7 @@
                 {
                     html_tag.dataset.theme = 'dark';
                     navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
-                    navItems.push({ label: 'Request Transport', href: '/dashboard/expedition/new' });
+                    navItems.push({ label: 'Request Transport', href: '/dashboard/expeditions/new' });
                 }
                 break;
         }

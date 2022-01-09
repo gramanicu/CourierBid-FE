@@ -10,7 +10,7 @@
         </li>
     {/each}
 </ul>
-<hr class="hidden sm:block" />
+<hr class="hidden sm:block border-primary" />
 
 <style lang="scss">
     .steps {
