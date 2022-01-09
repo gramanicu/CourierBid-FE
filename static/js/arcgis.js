@@ -6,6 +6,7 @@ window.addEventListener('load', () => {
     window.mapRemovePoints = clearPoints;
     window.computeRoute = buildRoute;
     window.routeLength = routeLength;
+    window.addTruck = addTruck;
 });
 
 function getCityCoordinates(city, callback) {
@@ -66,34 +67,70 @@ function clearPoints(view) {
     }
 }
 
+function addTruck(view, location, title, description) {
+    if (sessionStorage.getItem('esriApiKey') != '') {
+        require(['esri/Graphic'], function (Graphic) {
+            const point = {
+                type: 'point',
+                longitude: location.lng,
+                latitude: location.lat,
+            };
+
+            const color = [0, 0, 255];
+
+            const attributes = {
+                Title: title,
+                Description: description,
+            };
+
+            const graphic = new Graphic({
+                symbol: {
+                    type: 'simple-marker',
+                    color: color,
+                    size: '12px',
+                    outline: {
+                        color: [0, 0, 0],
+                        width: 2,
+                    },
+                },
+                popupTemplate: {
+                    title: '{Title}',
+                    content: '{Description}',
+                },
+                attributes,
+                geometry: point,
+            });
+            view.graphics.add(graphic);
+        });
+    }
+}
+
 function addPoint(view, location, type, callback) {
     if (sessionStorage.getItem('esriApiKey') != '') {
         require(['esri/Graphic'], function (Graphic) {
-            if (view.graphics.length < 2) {
-                const point = {
-                    type: 'point',
-                    longitude: location.lng,
-                    latitude: location.lat,
-                };
+            const point = {
+                type: 'point',
+                longitude: location.lng,
+                latitude: location.lat,
+            };
 
-                const color = type === 'start' ? [255, 255, 0] : [255, 0, 0];
+            const color = type === 'start' ? [255, 255, 0] : [255, 0, 0];
 
-                const graphic = new Graphic({
-                    symbol: {
-                        type: 'simple-marker',
-                        color: color,
-                        size: '12px',
-                        outline: {
-                            color: [0, 0, 0],
-                            width: 2,
-                        },
+            const graphic = new Graphic({
+                symbol: {
+                    type: 'simple-marker',
+                    color: color,
+                    size: '12px',
+                    outline: {
+                        color: [0, 0, 0],
+                        width: 2,
                     },
-                    geometry: point,
-                });
-                view.graphics.add(graphic);
-                if (callback) {
-                    callback();
-                }
+                },
+                geometry: point,
+            });
+            view.graphics.add(graphic);
+            if (callback) {
+                callback();
             }
         });
     }
@@ -121,14 +158,23 @@ function buildRoute(view, callback) {
             .then(function (data) {
                 data.routeResults.forEach(function (result) {
                     let routeLength = geometryEngine.geodesicLength(result.route.geometry, 'kilometers');
-                    callback(routeLength);
 
                     result.route.symbol = {
                         type: 'simple-line',
                         color: [5, 150, 255],
                         width: 3,
                     };
+
                     view.graphics.add(result.route);
+                    if (callback) {
+                        const intervalSize = Math.ceil(result.route.geometry.paths[0].length / 100);
+                        let path = [];
+                        for (i = intervalSize; i < result.route.geometry.paths[0].length; i += intervalSize) {
+                            path.push(result.route.geometry.paths[0][i]);
+                        }
+
+                        callback(routeLength, path);
+                    }
                 });
             })
 
@@ -176,7 +222,14 @@ function routeLength(p1, p2, callback) {
             .then(function (data) {
                 data.routeResults.forEach(function (result) {
                     let routeLength = geometryEngine.geodesicLength(result.route.geometry, 'kilometers');
-                    callback(routeLength);
+                    if (callback) {
+                        const intervalSize = Math.ceil(result.route.geometry.paths[0].length / 100);
+                        let path = [];
+                        for (i = intervalSize; i < result.route.geometry.paths[0].length; i += intervalSize) {
+                            path.push(result.route.geometry.paths[0][i]);
+                        }
+                        callback(routeLength, path);
+                    }
                 });
             })
 

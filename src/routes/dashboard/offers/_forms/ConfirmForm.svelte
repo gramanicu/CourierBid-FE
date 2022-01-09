@@ -14,14 +14,25 @@
     let routeLength = 0;
 
     onMount(() => {
-        is_valid = true;
+        is_valid = false;
     });
 
-    function routeComputedCallback(length) {
+    function routeComputedCallback(length, path) {
+        let route = [];
+        path.forEach(points => {
+            const point = {
+                lat: points[1],
+                lng: points[0],
+            };
+            route.push(point);
+        });
+
         const midPoint = {
             lat: (startPosition.lat + endPosition.lat) / 2,
             lng: (startPosition.lng + endPosition.lng) / 2,
         };
+
+        information.route = route;
 
         let zoomLevel = 10;
         if (length > 475) {
@@ -42,6 +53,7 @@
 
         window.centerMap(viewObject, midPoint, zoomLevel);
         routeLength = length;
+        is_valid = true;
     }
 
     function mapLoadCallback(map, view) {
@@ -77,8 +89,8 @@
         <p class="my-1">
             {startPosition.city} to {endPosition.city}<br />
             Length - {Math.floor(information.length)} km Duration - {information.duration}<br />
-            Departure - {information.departure.toLocaleString()}<br />
-            Arrival - {information.arrival.toLocaleString()}
+            Departure - {information.departure.toLocaleString('ro-RO')}<br />
+            Arrival - {information.arrival.toLocaleString('ro-RO')}
         </p>
         <small class="my-1">*these values are approximate</small>
     </div>

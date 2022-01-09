@@ -14,6 +14,10 @@
     let duration = null;
     let arrivalDateTime = null;
 
+    onMount(() => {
+        is_valid = true;
+    });
+
     let startDate = new Date().toISOString().slice(0, 10);
     let startTime = new Date().getHours();
 

@@ -56,6 +56,7 @@
             case roleType.TRANSPORTER:
                 {
                     html_tag.dataset.theme = 'cupcake';
+                    navItems.push({ label: 'Interactive Map', href: '/dashboard/map' });
                     navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
                     navItems.push({ label: 'Truck Management', href: '/dashboard/trucks' });
                     navItems.push({ label: 'Add Truck', href: '/dashboard/trucks/new' });
@@ -65,6 +66,7 @@
             case roleType.CLIENT:
                 {
                     html_tag.dataset.theme = 'dark';
+                    navItems.push({ label: 'Interactive Map', href: '/dashboard/map' });
                     navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
                     navItems.push({ label: 'Request Transport', href: '/dashboard/expeditions/new' });
                 }

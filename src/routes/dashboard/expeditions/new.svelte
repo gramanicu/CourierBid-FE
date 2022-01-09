@@ -42,9 +42,17 @@
                     volume: String(cargo.volume),
                 });
 
-                // TODO - finish call
-
-                console.log(res);
+                await callBackend('api/expeditions/add', 'POST', {
+                    cargoId: res.cargoId,
+                    userId: get(authUser).id,
+                    pickupLocation: JSON.stringify(route.start),
+                    deliveryLocation: JSON.stringify(route.end),
+                    budget: cargo.budget,
+                    pickupTime: info.pickupTime,
+                    deliveryTime: info.deliveryTime,
+                    pickupLimit: info.pickupLimit,
+                    deliveryLimit: info.deliveryLimit,
+                });
             } else {
                 return;
             }
