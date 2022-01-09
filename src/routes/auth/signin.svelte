@@ -30,7 +30,7 @@
                 id: res.userid,
                 username: user.username,
                 token: res.token,
-                role: res.role,
+                role: res.role.toUpperCase(),
             };
 
             authUser.set(authU);

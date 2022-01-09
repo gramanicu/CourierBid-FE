@@ -1,6 +1,7 @@
 <script>
     export let name;
     export let successBtnName = 'Save';
+    export let twoButtons = true;
 
     import { createEventDispatcher } from 'svelte';
 
@@ -19,7 +20,9 @@
     <div class="modal-box">
         <slot />
         <div class="modal-action">
-            <label on:click={success} for={name} class="btn btn-success">{successBtnName}</label>
+            {#if twoButtons}
+                <label on:click={success} for={name} class="btn btn-success">{successBtnName}</label>
+            {/if}
             <label on:click={close} for={name} class="btn">Close</label>
         </div>
     </div>

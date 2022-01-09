@@ -16,9 +16,11 @@
 </script>
 
 <div class="form-control">
-    <label for={name} class="label">
-        <span class="label-text">{label}</span>
-    </label>
+    {#if label}
+        <label for={name} class="label">
+            <span class="label-text">{label}</span>
+        </label>
+    {/if}
     <input
         bind:value
         type="text"

@@ -48,6 +48,7 @@
             case roleType.ADMIN:
                 {
                     html_tag.dataset.theme = 'halloween';
+                    navItems.push({ label: 'Interactive Map', href: '/dashboard/map' });
                     navItems.push({ label: 'Users', href: '/dashboard/users' });
                     navItems.push({ label: 'Cargo Types', href: '/dashboard/cargotypes' });
                     navItems.push({ label: 'Truck Models', href: '/dashboard/truckmodels' });
@@ -60,7 +61,8 @@
                     navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
                     navItems.push({ label: 'Truck Management', href: '/dashboard/trucks' });
                     navItems.push({ label: 'Add Truck', href: '/dashboard/trucks/new' });
-                    navItems.push({ label: 'Publish Offer', href: '/dashboard/offers/new' });
+                    navItems.push({ label: 'Transports Management', href: '/dashboard/offers' });
+                    navItems.push({ label: 'Add Transport', href: '/dashboard/offers/new' });
                 }
                 break;
             case roleType.CLIENT:
@@ -68,6 +70,7 @@
                     html_tag.dataset.theme = 'dark';
                     navItems.push({ label: 'Interactive Map', href: '/dashboard/map' });
                     navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
+                    navItems.push({ label: 'Ongoing Requests', href: '/dashboard/expeditions' });
                     navItems.push({ label: 'Request Transport', href: '/dashboard/expeditions/new' });
                 }
                 break;
