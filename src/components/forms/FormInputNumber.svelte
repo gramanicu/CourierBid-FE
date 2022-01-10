@@ -30,10 +30,6 @@
 </div>
 
 <style lang="scss">
-    .input-group :first-child {
-        flex-grow: 1;
-    }
-
     /* Chrome, Safari, Edge, Opera */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {

@@ -51,7 +51,7 @@
                 }),
                 startTime: information.departure,
                 endTime: information.arrival,
-                url: JSON.stringify(information.route),
+                url: JSON.stringify(information.url),
             });
         } catch (err) {
             console.error(err);

@@ -76,30 +76,54 @@ function addTruck(view, location, type, title, description) {
                 latitude: location.lat,
             };
 
-            const color = type === 'empty' ? [0, 255, 0] : [255, 0, 0];
+            let color;
+
+            if (type === 'empty') {
+                color = [0, 255, 0];
+            } else if (type === 'enroute') {
+                color = [0, 0, 255];
+            } else {
+                color = [255, 0, 0];
+            }
 
             const attributes = {
                 Title: title,
                 Description: description,
             };
 
-            const graphic = new Graphic({
-                symbol: {
-                    type: 'simple-marker',
-                    color: color,
-                    size: '12px',
-                    outline: {
-                        color: [0, 0, 0],
-                        width: 2,
+            let graphic;
+            if (title && description) {
+                graphic = new Graphic({
+                    symbol: {
+                        type: 'simple-marker',
+                        color: color,
+                        size: '12px',
+                        outline: {
+                            color: [0, 0, 0],
+                            width: 2,
+                        },
                     },
-                },
-                popupTemplate: {
-                    title: '{Title}',
-                    content: '{Description}',
-                },
-                attributes,
-                geometry: point,
-            });
+                    popupTemplate: {
+                        title: '{Title}',
+                        content: '{Description}',
+                    },
+                    attributes,
+                    geometry: point,
+                });
+            } else {
+                graphic = new Graphic({
+                    symbol: {
+                        type: 'simple-marker',
+                        color: color,
+                        size: '12px',
+                        outline: {
+                            color: [0, 0, 0],
+                            width: 2,
+                        },
+                    },
+                    geometry: point,
+                });
+            }
             view.graphics.add(graphic);
         });
     }

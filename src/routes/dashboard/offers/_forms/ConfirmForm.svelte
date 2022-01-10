@@ -32,7 +32,9 @@
             lng: (startPosition.lng + endPosition.lng) / 2,
         };
 
-        information.route = route;
+        information.url = {};
+        information.url.route = route;
+        information.url.distance = length;
 
         let zoomLevel = 10;
         if (length > 475) {

@@ -193,12 +193,4 @@
         --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
         box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
     }
-
-    .stat-value {
-        font-size: 1.5rem;
-    }
-
-    .stat-desc {
-        font-size: 0.75rem;
-    }
 </style>
