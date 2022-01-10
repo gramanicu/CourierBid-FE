@@ -70,6 +70,7 @@
                     html_tag.dataset.theme = 'dark';
                     navItems.push({ label: 'Interactive Map', href: '/dashboard/map' });
                     navItems.push({ label: 'Contracts', href: '/dashboard/contracts' });
+                    navItems.push({ label: 'Available Transports', href: '/dashboard/offers' });
                     navItems.push({ label: 'Ongoing Requests', href: '/dashboard/expeditions' });
                     navItems.push({ label: 'Request Transport', href: '/dashboard/expeditions/new' });
                 }

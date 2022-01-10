@@ -15,6 +15,9 @@
     let duration = null;
     let arrivalDateTime = null;
 
+    let beforeNow = false;
+    let overlaps = false;
+
     onMount(() => {
         is_valid = false;
     });
@@ -31,6 +34,17 @@
 
     async function validate() {
         try {
+            if (information.departure < new Date()) {
+                beforeNow = true;
+            } else {
+                beforeNow = false;
+            }
+
+            if (beforeNow) {
+                is_valid = false;
+                return;
+            }
+
             let validated = true;
             const res = await callBackend('api/transports/getall', 'GET');
 
@@ -47,6 +61,8 @@
                     }
                 }
             });
+
+            overlaps = !validated;
 
             is_valid = validated;
         } catch (err) {
@@ -157,8 +173,11 @@
         name="pickupTime"
         label="Pickup" />
 
-    {#if !is_valid}
+    {#if overlaps}
         <small class="mt-2 text-error">*overlaps another transport</small>
+    {/if}
+    {#if beforeNow}
+        <small class="mt-2 text-error">*can't travel back in time</small>
     {/if}
     <div class="mt-4">
         {#if arrivalDateTime}

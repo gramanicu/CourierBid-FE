@@ -1,6 +1,6 @@
 <script context="module">
     import { roleType, roleGuard } from '$lib/utils';
-    const permittedRoles = [roleType.TRANSPORTER];
+    const permittedRoles = [roleType.TRANSPORTER, roleType.CLIENT];
 
     export async function load() {
         return roleGuard(permittedRoles);
@@ -100,7 +100,8 @@
                 return truck.truckId === transport.truckId;
             });
 
-            if (transport.truck.courierId === get(authUser).id) {
+            const usertype = get(authUser).role;
+            if (transport.truck.courierId === get(authUser).id || usertype === roleType.CLIENT) {
                 transport.courierId = transport.truck.courierId;
                 transport.contracts = contracts.filter(contract => {
                     return contract.transportId === transport.transportId;
@@ -117,31 +118,38 @@
                 transport.startTime = revertTimezone(transport.startTime);
                 transport.endTime = revertTimezone(transport.endTime);
 
-                transport.startLocation = JSON.parse(transport.startLocation);
-                transport.endLocation = JSON.parse(transport.endLocation);
-                transport.route = JSON.parse(transport.url);
-                transport.weightPercent = (transport.weight * 100) / transport.truck.model.weight;
-                transport.volumePercent = (transport.volume * 100) / transport.truck.model.volume;
+                if (
+                    (usertype === roleType.CLIENT &&
+                        transport.endTime >= new Date() &&
+                        transport.startTime >= new Date()) ||
+                    usertype === roleType.TRANSPORTER
+                ) {
+                    transport.startLocation = JSON.parse(transport.startLocation);
+                    transport.endLocation = JSON.parse(transport.endLocation);
+                    transport.route = JSON.parse(transport.url);
+                    transport.weightPercent = (transport.weight * 100) / transport.truck.model.weight;
+                    transport.volumePercent = (transport.volume * 100) / transport.truck.model.volume;
 
-                transport.maxPrice = transport.route.distance * transport.truck.emptyPrice;
-                transport.minPrice = transport.route.distance * transport.truck.fullPrice;
+                    transport.maxPrice = transport.route.distance * transport.truck.emptyPrice;
+                    transport.minPrice = transport.route.distance * transport.truck.fullPrice;
 
-                if (transport.weightPercent) {
-                    transport.earnings =
-                        scale(transport.weightPercent, 0, 100, transport.minPrice, transport.maxPrice) *
-                        transport.contracts.length;
+                    if (transport.weightPercent) {
+                        transport.earnings =
+                            scale(transport.weightPercent, 0, 100, transport.minPrice, transport.maxPrice) *
+                            transport.contracts.length;
+                    }
+
+                    const progress = scale(
+                        Date.parse(new Date()),
+                        Date.parse(transport.startTime),
+                        Date.parse(transport.endTime),
+                        0,
+                        100
+                    );
+                    transport.progress = progress;
+
+                    transports = [...transports, transport];
                 }
-
-                const progress = scale(
-                    Date.parse(new Date()),
-                    Date.parse(transport.startTime),
-                    Date.parse(transport.endTime),
-                    0,
-                    100
-                );
-                transport.progress = progress;
-
-                transports = [...transports, transport];
             }
         });
     }
@@ -177,7 +185,7 @@
         if (value === 0 || value === undefined || value === null || value === 'NaN') {
             return 'N/A';
         } else {
-            return `${Math.floor(value)}`;
+            return `${Math.round(value * 100) / 100}`;
         }
     }
 
@@ -258,7 +266,8 @@
                     <th class="hidden lg:table-cell">Start City</th>
                     <th class="hidden lg:table-cell">End City</th>
                     <th class="hidden sm:table-cell">Contracts</th>
-                    <th class="hidden sm:table-cell">Earnings (RON)</th>
+                    <th class="hidden sm:table-cell"
+                        >{get(authUser).role === roleType.CLIENT ? 'Max Price' : 'Earnings'} (RON)</th>
                     <th class="hidden 2xl:table-cell">Cargo Volume (m³)</th>
                     <th class="hidden xl:table-cell">Cargo Weight (kg)</th>
                     <th>View</th>
@@ -273,7 +282,10 @@
                         <td class="hidden lg:table-cell">{transport.startLocation.city}</td>
                         <td class="hidden lg:table-cell">{transport.endLocation.city}</td>
                         <td class="hidden sm:table-cell">{transport.contracts.length}</td>
-                        <td class="hidden sm:table-cell">{oMustBeNAN(transport.earnings)}</td>
+                        <td class="hidden sm:table-cell"
+                            >{oMustBeNAN(
+                                get(authUser).role === roleType.CLIENT ? transport.maxPrice : transport.earnings
+                            )}</td>
                         <td class="hidden 2xl:table-cell"
                             >{transport.volume} ({oPercentMustBeNAN(transport.volumePercent)})</td>
                         <td class="hidden xl:table-cell"
@@ -299,7 +311,9 @@
                 <div class="flex flex-col justify-between w-full">
                     <p class="my-1">
                         Assigned Contracts: {viewedTransport.contracts.length}<br />
-                        Earnings (RON): {oMustBeNAN(viewedTransport.earnings)}<br />
+                        {get(authUser).role === roleType.CLIENT ? 'Max Price' : 'Earnings'} (RON): {oMustBeNAN(
+                            get(authUser).role === roleType.CLIENT ? viewedTransport.maxPrice : viewedTransport.earnings
+                        )}<br />
                         Route progress: {progressToString(viewedTransport.progress)}
                     </p>
                     <p class="my-1">

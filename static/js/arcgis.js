@@ -203,7 +203,7 @@ function buildRoute(view, callback) {
             })
 
             .catch(function (error) {
-                console.log(error);
+                console.error(error);
             });
     });
 }
@@ -258,7 +258,7 @@ function routeLength(p1, p2, callback) {
             })
 
             .catch(function (error) {
-                console.log(error);
+                console.error(error);
             });
     });
 }

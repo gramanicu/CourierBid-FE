@@ -41,7 +41,7 @@
                 role: null,
                 token: null,
             };
-            console.log(err);
+            console.error(err);
         }
 
         isLogged.set(true);

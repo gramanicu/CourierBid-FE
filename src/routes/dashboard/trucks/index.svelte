@@ -55,7 +55,7 @@
 
             Object.assign(trucks[trucks.findIndex(el => el.truckId === editedTruck.truckId)], editedTruck);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
 
         trucks = trucks;

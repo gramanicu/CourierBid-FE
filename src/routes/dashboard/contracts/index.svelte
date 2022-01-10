@@ -120,6 +120,14 @@
         });
     }
 
+    function oMustBeNAN(value) {
+        if (value === 0 || value === undefined || value === null || value === 'NaN') {
+            return 'N/A';
+        } else {
+            return `${Math.round(value * 100) / 100}`;
+        }
+    }
+
     onMount(async () => {
         await loadData();
         loadMap();
@@ -290,7 +298,7 @@
                         <td>{contract.status}</td>
                         <td class="hidden lg:table-cell">{contract.transport.startLocation.city}</td>
                         <td class="hidden lg:table-cell">{contract.transport.endLocation.city}</td>
-                        <td class="hidden sm:table-cell">{Math.floor(contract.earnings)}</td>
+                        <td class="hidden sm:table-cell">{oMustBeNAN(contract.earnings)}</td>
                         <td class="hidden sm:table-cell">{contract.expedition.cargo.weight}</td>
                         <td>
                             <ModalToggle on:click={openModal(contract.contractId)} name="view-modal"
