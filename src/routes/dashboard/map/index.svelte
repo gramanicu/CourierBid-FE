@@ -26,7 +26,16 @@
     });
 
     function scale(number, inMin, inMax, outMin, outMax) {
-        return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        let value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        if (value > outMax) {
+            return outMax;
+        }
+
+        if (value < outMin) {
+            return outMin;
+        }
+
+        return value;
     }
 
     Date.prototype.addHours = function (h) {
@@ -44,10 +53,16 @@
 
         let trucks = [];
         let models = [];
+        let contracts = [];
 
         let res = await callBackend('api/truckmodel/getall', 'GET');
         res.forEach(model => {
             models.push(model);
+        });
+
+        res = await callBackend('api/contracts/getall', 'GET');
+        res.forEach(contract => {
+            contracts.push(contract);
         });
 
         res = await callBackend('api/trucks/getall', 'GET');
@@ -56,8 +71,6 @@
             truck.model = model;
             trucks.push(truck);
         });
-
-        // TODO - check if it's part of a contract ?
 
         res = await callBackend('api/transports/getall', 'GET');
         res.forEach(transport => {
@@ -68,7 +81,12 @@
             transport.endTime = revertTimezone(transport.endTime);
             transport.startLocation = JSON.parse(transport.startLocation);
             transport.endLocation = JSON.parse(transport.endLocation);
-            transport.route = JSON.parse(transport.url);
+            transport.route = JSON.parse(transport.url).route;
+
+            transport.hasContracts =
+                contracts.filter(contract => {
+                    return contract.transportId === transport.transportId;
+                }).length > 0;
 
             transports.push(transport);
         });
@@ -105,8 +123,14 @@
                 <b>Expected arrival:</b> ${transport.endTime.toLocaleString()}<br>
                 <b>Progress:</b> ${Math.floor(progress)} %`;
 
-                if (currLocation > 0 && currLocation < transport.route.length) {
-                    window.addTruck(viewObject, transport.route[currLocation], 'full', title, description);
+                if (currLocation < transport.route.length) {
+                    window.addTruck(
+                        viewObject,
+                        transport.route[currLocation],
+                        transport.hasContracts ? 'full' : 'empty',
+                        title,
+                        description
+                    );
                 }
             }
         });
