@@ -34,7 +34,19 @@
     let viewedTransport = null;
 
     function scale(number, inMin, inMax, outMin, outMax) {
-        let value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        let value;
+        if (outMin > outMax) {
+            let aux = ((number - inMin) * (outMin - outMax)) / (inMax - inMin) + outMax;
+            aux -= outMax;
+            value = outMin - aux;
+
+            aux = outMax;
+            outMax = outMin;
+            outMin = aux;
+        } else {
+            value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        }
+
         if (value > outMax) {
             return outMax;
         }
@@ -135,7 +147,7 @@
 
                     if (transport.weightPercent) {
                         transport.earnings =
-                            scale(transport.weightPercent, 0, 100, transport.minPrice, transport.maxPrice) *
+                            scale(transport.weightPercent, 0, 100, transport.maxPrice, transport.minPrice) *
                             transport.contracts.length;
                     }
 
@@ -258,46 +270,52 @@
 
 <div class="w-full overflow-x-auto min-h-full">
     {#if transports}
-        <table class="table w-full border border-base-300">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Progress</th>
-                    <th class="hidden lg:table-cell">Start City</th>
-                    <th class="hidden lg:table-cell">End City</th>
-                    <th class="hidden sm:table-cell">Contracts</th>
-                    <th class="hidden sm:table-cell"
-                        >{get(authUser).role === roleType.CLIENT ? 'Max Price' : 'Earnings'} (RON)</th>
-                    <th class="hidden 2xl:table-cell">Cargo Volume (m³)</th>
-                    <th class="hidden xl:table-cell">Cargo Weight (kg)</th>
-                    <th>View</th>
-                    <th />
-                </tr>
-            </thead>
-            <tbody>
-                {#each transports as transport, index}
+        {#if transports.length === 0}
+            <div class="prose max-w-none mt-4">
+                <h3 class="w-full text-center">No transports registered</h3>
+            </div>
+        {:else}
+            <table class="table w-full border border-base-300">
+                <thead>
                     <tr>
-                        <td class="sticky left-0 z-10">{index + 1}</td>
-                        <td>{progressToString(transport.progress)}</td>
-                        <td class="hidden lg:table-cell">{transport.startLocation.city}</td>
-                        <td class="hidden lg:table-cell">{transport.endLocation.city}</td>
-                        <td class="hidden sm:table-cell">{transport.contracts.length}</td>
-                        <td class="hidden sm:table-cell"
-                            >{oMustBeNAN(
-                                get(authUser).role === roleType.CLIENT ? transport.maxPrice : transport.earnings
-                            )}</td>
-                        <td class="hidden 2xl:table-cell"
-                            >{transport.volume} ({oPercentMustBeNAN(transport.volumePercent)})</td>
-                        <td class="hidden xl:table-cell"
-                            >{transport.weight} ({oPercentMustBeNAN(transport.weightPercent)})</td>
-                        <td>
-                            <ModalToggle on:click={openModal(transport.transportId)} name="view-modal"
-                                ><VisibilitySvg class="cursor-pointer" /></ModalToggle>
-                        </td>
+                        <th>#</th>
+                        <th>Progress</th>
+                        <th class="hidden lg:table-cell">Start City</th>
+                        <th class="hidden lg:table-cell">End City</th>
+                        <th class="hidden sm:table-cell">Contracts</th>
+                        <th class="hidden sm:table-cell"
+                            >{get(authUser).role === roleType.CLIENT ? 'Max Price' : 'Earnings'} (RON)</th>
+                        <th class="hidden 2xl:table-cell">Cargo Volume (m³)</th>
+                        <th class="hidden xl:table-cell">Cargo Weight (kg)</th>
+                        <th>View</th>
+                        <th />
                     </tr>
-                {/each}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {#each transports as transport, index}
+                        <tr>
+                            <td class="sticky left-0 z-10">{index + 1}</td>
+                            <td>{progressToString(transport.progress)}</td>
+                            <td class="hidden lg:table-cell">{transport.startLocation.city}</td>
+                            <td class="hidden lg:table-cell">{transport.endLocation.city}</td>
+                            <td class="hidden sm:table-cell">{transport.contracts.length}</td>
+                            <td class="hidden sm:table-cell"
+                                >{oMustBeNAN(
+                                    get(authUser).role === roleType.CLIENT ? transport.maxPrice : transport.earnings
+                                )}</td>
+                            <td class="hidden 2xl:table-cell"
+                                >{transport.volume} ({oPercentMustBeNAN(transport.volumePercent)})</td>
+                            <td class="hidden xl:table-cell"
+                                >{transport.weight} ({oPercentMustBeNAN(transport.weightPercent)})</td>
+                            <td>
+                                <ModalToggle on:click={openModal(transport.transportId)} name="view-modal"
+                                    ><VisibilitySvg class="cursor-pointer" /></ModalToggle>
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        {/if}
     {:else}
         <div class="prose max-w-none mt-4">
             <h1 class="w-full text-center">Loading data...</h1>
@@ -310,6 +328,7 @@
                 <h2 class="my-1">Transport information</h2>
                 <div class="flex flex-col justify-between w-full">
                     <p class="my-1">
+                        Truck: {viewedTransport.truck.registryPlate}<br />
                         Assigned Contracts: {viewedTransport.contracts.length}<br />
                         {get(authUser).role === roleType.CLIENT ? 'Max Price' : 'Earnings'} (RON): {oMustBeNAN(
                             get(authUser).role === roleType.CLIENT ? viewedTransport.maxPrice : viewedTransport.earnings
@@ -319,7 +338,9 @@
                     <p class="my-1">
                         Route: {viewedTransport.startLocation.city} to {viewedTransport.endLocation.city}<br />
                         Departure: {viewedTransport.startTime.toLocaleString('ro-RO')}<br />
-                        Arrival: {viewedTransport.endTime.toLocaleString('ro-RO')}
+                        Arrival: {viewedTransport.endTime.toLocaleString('ro-RO')}<br />
+                        Remaining capacity: {viewedTransport.truck.model.weight - viewedTransport.weight} kg, {viewedTransport
+                            .truck.model.volume - viewedTransport.volume} m³,
                     </p>
                 </div>
             </div>

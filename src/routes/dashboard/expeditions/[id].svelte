@@ -38,7 +38,19 @@
     let viewedTransport = null;
 
     function scale(number, inMin, inMax, outMin, outMax) {
-        let value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        let value;
+        if (outMin > outMax) {
+            let aux = ((number - inMin) * (outMin - outMax)) / (inMax - inMin) + outMax;
+            aux -= outMax;
+            value = outMin - aux;
+
+            aux = outMax;
+            outMax = outMin;
+            outMin = aux;
+        } else {
+            value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        }
+
         if (value > outMax) {
             return outMax;
         }
@@ -183,8 +195,8 @@
                             possibleWeightPercent,
                             0,
                             100,
-                            transport.minPrice,
-                            transport.maxPrice
+                            transport.maxPrice,
+                            transport.minPrice
                         );
                         validTransports = [...validTransports, transport];
                     }

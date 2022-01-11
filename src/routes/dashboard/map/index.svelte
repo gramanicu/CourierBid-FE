@@ -26,7 +26,19 @@
     });
 
     function scale(number, inMin, inMax, outMin, outMax) {
-        let value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        let value;
+        if (outMin > outMax) {
+            let aux = ((number - inMin) * (outMin - outMax)) / (inMax - inMin) + outMax;
+            aux -= outMax;
+            value = outMin - aux;
+
+            aux = outMax;
+            outMax = outMin;
+            outMin = aux;
+        } else {
+            value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        }
+
         if (value > outMax) {
             return outMax;
         }
@@ -91,7 +103,23 @@
             transports.push(transport);
         });
 
-        transports.forEach(transport => {
+        transports = transports.sort((transportA, transportB) => {
+            return transportA.startTime - transportB.startTime;
+        });
+
+        let nextTransports = [];
+
+        trucks.forEach(truck => {
+            let next = transports.find(transport => {
+                return transport.truckId === truck.truckId;
+            });
+
+            if (next) {
+                nextTransports.push(next);
+            }
+        });
+
+        nextTransports.forEach(transport => {
             const role = get(authUser).role;
 
             if (role === roleType.ADMIN || role === roleType.CLIENT || transport.truck.courierId === get(authUser).id) {
@@ -118,7 +146,7 @@
                 <b>Route :</b> ${transport.startLocation.city} to ${transport.endLocation.city}<br>
                 <b>Truck Type:</b> ${transport.truck.model.brand} ${transport.truck.model.name}<br>
                 <b>Avg. Speed:</b> ${transport.truck.model.speed} kph<br>
-                <b>Price:</b> ${transport.truck.emptyPrice} - ${transport.truck.fullPrice} RON/km<br>
+                <b>Price:</b> ${transport.truck.fullPrice} - ${transport.truck.emptyPrice} RON/km<br>
                 <b>Pickup :</b> ${transport.startTime.toLocaleString()}<br>
                 <b>Expected arrival:</b> ${transport.endTime.toLocaleString()}<br>
                 <b>Progress:</b> ${Math.floor(progress)} %`;

@@ -2,7 +2,7 @@
     export let placeholder;
     export let name;
     export let options; // An array of the selects options ({value, label})
-    export let value;
+    export let value = null;
     export let limitedWidth = true;
     export let primary = false;
     export let label = null;

@@ -54,8 +54,8 @@
                     let endT = revertTimezone(transport.endTime);
 
                     if (
-                        (startT > information.departure && startT < information.arrival) ||
-                        (endT > information.departure && endT < information.arrival)
+                        (startT < information.departure && information.departure < endT) ||
+                        (startT < information.arrival && information.arrival < endT)
                     ) {
                         validated = false;
                     }
@@ -187,7 +187,7 @@
                 )}
             </p>
             <p>
-                Route cost: {Math.floor(truck.emptyPrice * routeLength)} - {Math.floor(truck.fullPrice * routeLength)} RON
+                Route cost: {Math.floor(truck.fullPrice * routeLength)} - {Math.floor(truck.emptyPrice * routeLength)} RON
             </p>
         {/if}
     </div>

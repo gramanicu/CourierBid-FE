@@ -58,13 +58,13 @@
             return;
         }
 
-        goto('/dashboard/trucks');
+        goto('/dashboard/offers');
     }
 
-    let truck;
-    let start;
-    let end;
-    let information;
+    let truck = {};
+    let start = {};
+    let end = {};
+    let information = {};
 
     onMount(() => {
         steps.forEach(() => {

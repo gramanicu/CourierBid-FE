@@ -21,7 +21,19 @@
     let types = [];
 
     function scale(number, inMin, inMax, outMin, outMax) {
-        let value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        let value;
+        if (outMin > outMax) {
+            let aux = ((number - inMin) * (outMin - outMax)) / (inMax - inMin) + outMax;
+            aux -= outMax;
+            value = outMin - aux;
+
+            aux = outMax;
+            outMax = outMin;
+            outMin = aux;
+        } else {
+            value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        }
+
         if (value > outMax) {
             return outMax;
         }
@@ -85,7 +97,12 @@
                     expedition.pickupLocation = JSON.parse(expedition.pickupLocation);
                     expedition.deliveryLocation = JSON.parse(expedition.deliveryLocation);
 
-                    expeditions = [...expeditions, expedition];
+                    if (expedition.pickupTime > new Date()) {
+                        expeditions = [...expeditions, expedition];
+                    } else {
+                        // Only the passed ones, without contract are removed
+                        callBackend(`api/expeditions/delete/${expedition.expeditionId}`, 'POST');
+                    }
                 }
             }
         });
@@ -98,37 +115,43 @@
 
 <div class="w-full overflow-x-auto min-h-full">
     {#if expeditions}
-        <table class="table w-full border border-base-300">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th class="hidden sm:table-cell">Budget (RON)</th>
-                    <th class="hidden lg:table-cell">Weight (kg)</th>
-                    <th class="hidden lg:table-cell">Type</th>
-                    <th>View</th>
-                    <th />
-                </tr>
-            </thead>
-            <tbody>
-                {#each expeditions as expedition, index}
+        {#if expeditions.length === 0}
+            <div class="prose max-w-none mt-4">
+                <h3 class="w-full text-center">No ongoing requests for expeditions</h3>
+            </div>
+        {:else}
+            <table class="table w-full border border-base-300">
+                <thead>
                     <tr>
-                        <td class="sticky left-0 z-10">{index + 1}</td>
-                        <td>{expedition.pickupLocation.city}</td>
-                        <td>{expedition.deliveryLocation.city}</td>
-                        <td class="hidden sm:table-cell">{expedition.budget}</td>
-                        <td class="hidden lg:table-cell">{expedition.cargo.weight}</td>
-                        <td class="hidden lg:table-cell">{expedition.cargo.type.name}</td>
-                        <td>
-                            <a href="/dashboard/expeditions/{expedition.expeditionId}">
-                                <VisibilitySvg class="cursor-pointer" />
-                            </a>
-                        </td>
+                        <th>#</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th class="hidden sm:table-cell">Budget (RON)</th>
+                        <th class="hidden lg:table-cell">Weight (kg)</th>
+                        <th class="hidden lg:table-cell">Type</th>
+                        <th>View Offers</th>
+                        <th />
                     </tr>
-                {/each}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {#each expeditions as expedition, index}
+                        <tr>
+                            <td class="sticky left-0 z-10">{index + 1}</td>
+                            <td>{expedition.pickupLocation.city}</td>
+                            <td>{expedition.deliveryLocation.city}</td>
+                            <td class="hidden sm:table-cell">{expedition.budget}</td>
+                            <td class="hidden lg:table-cell">{expedition.cargo.weight}</td>
+                            <td class="hidden lg:table-cell">{expedition.cargo.type.name}</td>
+                            <td>
+                                <a href="/dashboard/expeditions/{expedition.expeditionId}">
+                                    <VisibilitySvg class="cursor-pointer" />
+                                </a>
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        {/if}
     {:else}
         <div class="prose max-w-none mt-4">
             <h1 class="w-full text-center">Loading data...</h1>

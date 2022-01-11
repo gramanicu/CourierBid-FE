@@ -69,40 +69,46 @@
 
 <div class="w-full overflow-x-auto min-h-full">
     {#if trucks}
-        <table class="table w-full border border-base-300">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Registry Plate</th>
-                    <th class="hidden lg:table-cell">Brand</th>
-                    <th class="hidden lg:table-cell">Model</th>
-                    <th class="hidden sm:table-cell">Avg. Speed (kph)</th>
-                    <th class="hidden sm:table-cell">Full Price (RON/km)</th>
-                    <th class="hidden 2xl:table-cell">Empty Price (RON/km)</th>
-                    <th class="hidden xl:table-cell">Weight Capacity (kg)</th>
-                    <th>Edit</th>
-                    <th />
-                </tr>
-            </thead>
-            <tbody>
-                {#each trucks as truck, index}
+        {#if trucks.length === 0}
+            <div class="prose max-w-none mt-4">
+                <h3 class="w-full text-center">No trucks registered</h3>
+            </div>
+        {:else}
+            <table class="table w-full border border-base-300">
+                <thead>
                     <tr>
-                        <td class="sticky left-0 z-10">{index + 1}</td>
-                        <td>{truck.registryPlate}</td>
-                        <td class="hidden lg:table-cell">{truck.model.brand}</td>
-                        <td class="hidden lg:table-cell">{truck.model.name}</td>
-                        <td class="hidden sm:table-cell">{truck.model.speed}</td>
-                        <td class="hidden sm:table-cell">{truck.fullPrice}</td>
-                        <td class="hidden 2xl:table-cell">{truck.emptyPrice}</td>
-                        <td class="hidden xl:table-cell">{truck.model.weight}</td>
-                        <td>
-                            <ModalToggle on:click={openModal(truck.truckId)} name="edit-modal"
-                                ><EditSvg class="cursor-pointer" /></ModalToggle>
-                        </td>
+                        <th>#</th>
+                        <th>Registry Plate</th>
+                        <th class="hidden lg:table-cell">Brand</th>
+                        <th class="hidden lg:table-cell">Model</th>
+                        <th class="hidden sm:table-cell">Avg. Speed (kph)</th>
+                        <th class="hidden sm:table-cell">Full Price (RON/km)</th>
+                        <th class="hidden 2xl:table-cell">Empty Price (RON/km)</th>
+                        <th class="hidden xl:table-cell">Weight Capacity (kg)</th>
+                        <th>Edit</th>
+                        <th />
                     </tr>
-                {/each}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {#each trucks as truck, index}
+                        <tr>
+                            <td class="sticky left-0 z-10">{index + 1}</td>
+                            <td>{truck.registryPlate}</td>
+                            <td class="hidden lg:table-cell">{truck.model.brand}</td>
+                            <td class="hidden lg:table-cell">{truck.model.name}</td>
+                            <td class="hidden sm:table-cell">{truck.model.speed}</td>
+                            <td class="hidden sm:table-cell">{truck.fullPrice}</td>
+                            <td class="hidden 2xl:table-cell">{truck.emptyPrice}</td>
+                            <td class="hidden xl:table-cell">{truck.model.weight}</td>
+                            <td>
+                                <ModalToggle on:click={openModal(truck.truckId)} name="edit-modal"
+                                    ><EditSvg class="cursor-pointer" /></ModalToggle>
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        {/if}
     {:else}
         <div class="prose max-w-none mt-4">
             <h1 class="w-full text-center">Loading data...</h1>
@@ -113,7 +119,7 @@
         {#if editedTruck}
             <div class="prose mt-4 w-full pr-4">
                 <h2 class="my-1">Truck information</h2>
-                <div class="flex flex-col md:flex-row justify-between w-full">
+                <div class="flex flex-col lg:flex-row justify-between gap-2 w-full">
                     <p class="my-1">
                         Brand: {editedTruck.model.brand}<br />
                         Model: {editedTruck.model.name}<br />

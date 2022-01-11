@@ -134,7 +134,19 @@
     });
 
     function scale(number, inMin, inMax, outMin, outMax) {
-        let value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        let value;
+        if (outMin > outMax) {
+            let aux = ((number - inMin) * (outMin - outMax)) / (inMax - inMin) + outMax;
+            aux -= outMax;
+            value = outMin - aux;
+
+            aux = outMax;
+            outMax = outMin;
+            outMin = aux;
+        } else {
+            value = ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        }
+
         if (value > outMax) {
             return outMax;
         }
@@ -192,7 +204,7 @@
         contract.minPrice = contract.transport.route.distance * contract.transport.truck.fullPrice;
 
         if (contract.transport.weightPercent) {
-            contract.earnings = scale(contract.transport.weightPercent, 0, 100, contract.minPrice, contract.maxPrice);
+            contract.earnings = scale(contract.transport.weightPercent, 0, 100, contract.maxPrice, contract.minPrice);
         }
 
         return contract;
@@ -276,38 +288,44 @@
 </script>
 
 <div class="w-full overflow-x-auto min-h-full">
-    {#if trucks}
-        <table class="table w-full border border-base-300">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Status</th>
-                    <th class="hidden lg:table-cell">From</th>
-                    <th class="hidden lg:table-cell">To</th>
-                    <th class="hidden sm:table-cell"
-                        >{get(authUser).role == roleType.TRANSPORTER ? 'Earnings' : 'Price'} (RON)</th>
-                    <th class="hidden sm:table-cell">Cargo Weight (kg)</th>
-                    <th>View</th>
-                    <th />
-                </tr>
-            </thead>
-            <tbody>
-                {#each contracts as contract, index}
+    {#if contracts}
+        {#if contracts.length === 0}
+            <div class="prose max-w-none mt-4">
+                <h3 class="w-full text-center">No contracts</h3>
+            </div>
+        {:else}
+            <table class="table w-full border border-base-300">
+                <thead>
                     <tr>
-                        <td class="sticky left-0 z-10">{index + 1}</td>
-                        <td>{contract.status}</td>
-                        <td class="hidden lg:table-cell">{contract.transport.startLocation.city}</td>
-                        <td class="hidden lg:table-cell">{contract.transport.endLocation.city}</td>
-                        <td class="hidden sm:table-cell">{oMustBeNAN(contract.earnings)}</td>
-                        <td class="hidden sm:table-cell">{contract.expedition.cargo.weight}</td>
-                        <td>
-                            <ModalToggle on:click={openModal(contract.contractId)} name="view-modal"
-                                ><VisibilitySvg class="cursor-pointer" /></ModalToggle>
-                        </td>
+                        <th>#</th>
+                        <th>Status</th>
+                        <th class="hidden lg:table-cell">From</th>
+                        <th class="hidden lg:table-cell">To</th>
+                        <th class="hidden sm:table-cell"
+                            >{get(authUser).role == roleType.TRANSPORTER ? 'Earnings' : 'Price'} (RON)</th>
+                        <th class="hidden sm:table-cell">Cargo Weight (kg)</th>
+                        <th>View</th>
+                        <th />
                     </tr>
-                {/each}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {#each contracts as contract, index}
+                        <tr>
+                            <td class="sticky left-0 z-10">{index + 1}</td>
+                            <td>{contract.status}</td>
+                            <td class="hidden lg:table-cell">{contract.transport.startLocation.city}</td>
+                            <td class="hidden lg:table-cell">{contract.transport.endLocation.city}</td>
+                            <td class="hidden sm:table-cell">{oMustBeNAN(contract.earnings)}</td>
+                            <td class="hidden sm:table-cell">{contract.expedition.cargo.weight}</td>
+                            <td>
+                                <ModalToggle on:click={openModal(contract.contractId)} name="view-modal"
+                                    ><VisibilitySvg class="cursor-pointer" /></ModalToggle>
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        {/if}
     {:else}
         <div class="prose max-w-none mt-4">
             <h1 class="w-full text-center">Loading data...</h1>
@@ -337,7 +355,10 @@
                                 viewedContract.transport.route.distance
                             )} km) <br />
                             Departure: {viewedContract.transport.startTime.toLocaleString('ro-RO')}<br />
-                            Arrival: {viewedContract.transport.endTime.toLocaleString('ro-RO')}
+                            Arrival: {viewedContract.transport.endTime.toLocaleString('ro-RO')}<br />
+                            {get(authUser).role == roleType.TRANSPORTER ? 'Earnings' : 'Price'}: {oMustBeNAN(
+                                viewedContract.earnings
+                            )} RON
                         </p>
                     </div>
                 </div>

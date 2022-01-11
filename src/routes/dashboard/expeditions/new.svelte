@@ -70,9 +70,9 @@
         });
     });
 
-    let cargo;
-    let route;
-    let info;
+    let cargo = {};
+    let route = {};
+    let info = {};
 </script>
 
 <svelte:head>

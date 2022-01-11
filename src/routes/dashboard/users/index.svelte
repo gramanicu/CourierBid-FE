@@ -48,7 +48,7 @@
                     <th class="hidden sm:table-cell">Email</th>
                     <th class="hidden sm:table-cell">Role</th>
                     <th class="hidden 2xl:table-cell">Phone</th>
-                    <th>Edit</th>
+                    <th>View</th>
                     <th />
                 </tr>
             </thead>

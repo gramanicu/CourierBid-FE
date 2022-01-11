@@ -55,7 +55,7 @@
             info.pickupLimit <= info.pickupTime &&
             info.pickupTime <= info.deliveryTime &&
             info.deliveryTime <= info.deliveryLimit &&
-            new Date() < info.pickupLimit
+            new Date() < info.pickupTime
         ) {
             is_valid = true;
         } else {
